@@ -5,8 +5,8 @@ Boże co my robimy
 - Python 3.12 or higher
 - Nodejs v22.14.0
 
-### Instalacja
-# Back-End (Python/Flask)
+## Instalacja
+### Back-End (Python/Flask)
 ```
 cd flask-server
 python -m venv {nazwa środowkiska}
@@ -14,7 +14,7 @@ python -m venv {nazwa środowkiska}
 pip install flask
 python server.py```
 ```
-# Front-End (React)
+### Front-End (React)
 ```
 cd client 
 npm install 
