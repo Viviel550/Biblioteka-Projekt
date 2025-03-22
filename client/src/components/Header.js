@@ -6,7 +6,7 @@ function Header() {
     <header className="header">
       <div className="logo">
         {/* Add your logo here */}
-        <img src="path/to/logo.png" alt="Logo" />
+        <img src="/" alt="Logo" />
       </div>
       <nav className="navbar">
         <a href="/" className="nav-item">Strona Główna</a>

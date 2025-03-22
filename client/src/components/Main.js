@@ -7,10 +7,10 @@ function Main() {
     useEffect(() => {
         fetch('/testbooks')
             .then(response => response.json())
-            .then(data => setBooks(data.slice(0, 20))) // Limit to 20 books
+            .then(data => setBooks(data.slice(0, 50))) // Limit to 50 books
             .catch(error => {
                 console.error('Error fetching books:', error);
-                alert('Error fetching books. Please try again later.');
+                alert('Wystąpił błąd podczas pobierania książek.');
             });
     }, []);
 
