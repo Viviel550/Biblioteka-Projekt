@@ -1,0 +1,61 @@
+.popular {
+    background: linear-gradient(to bottom right, #f0e68c, #dda0dd);
+    padding: 2rem;
+    border-radius: 1em;
+    box-shadow: 0 0.4em 0.6em rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-family: Arial, sans-serif;
+    position: relative; /* Ensure it doesn’t overlap other elements */
+    z-index: 1; /* Lower z-index to avoid overlapping the header */
+}
+
+.popular h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 1.5em;
+    color: #4b0082; /* Indigo */
+}
+
+.popular ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.book-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2em;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 0.5em;
+    padding: 1em;
+    box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.1);
+}
+
+.book-image {
+    width: 10vw; /* Scales with the viewport width */
+    height: auto;
+    border-radius: 0.5em;
+    margin-right: 1em;
+}
+
+.book-details {
+    flex: 1;
+}
+
+.book-title {
+    font-size: 1.5em;
+    margin: 0 0 0.5em;
+    color: #4b0082; /* Indigo */
+}
+
+.book-type {
+    font-size: 1.2em;
+    margin: 0 0 0.5em;
+    color: #555;
+}
+
+.book-description {
+    font-size: 1em;
+    color: #666;
+}

@@ -1,8 +1,11 @@
-from flask import Flask, jsonify
-import requests
-import logging
-
+from flask import Flask, jsonify, request
+import requests, logging, sys, os
+from blueprints.login import auth
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__)
+
+# register the login blueprint
+app.register_blueprint(auth)  
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

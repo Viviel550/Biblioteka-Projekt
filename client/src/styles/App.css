@@ -1,8 +1,9 @@
-/* filepath: e:\Projekty GITHUB\Grupa\Biblioteka-Projekt\client\src\styles\App.css */
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .App {
@@ -47,6 +48,7 @@ html, body, #root {
     transform: rotate(360deg);
   }
 }
+
 .error {
   display: flex;
   justify-content: center;
@@ -58,4 +60,28 @@ html, body, #root {
 .error h1 {
   font-size: 2rem;
   color: red;
+}
+
+/* New styles for Wrapper and Content */
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the wrapper covers the full viewport height */
+}
+
+.Header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background-color: #f5f5dc;
+  box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.1);
+}
+
+.Content {
+  margin-top: 0rem; /* Add space equal to the height of the fixed header */
+  flex: 1; /* Allow the content to grow and fill the remaining space */
+  padding: 1rem; /* Add padding for better spacing */
+  background: linear-gradient(to bottom right, #f0e68c, #dda0dd); /* Optional: Add a background color for the content */
 }

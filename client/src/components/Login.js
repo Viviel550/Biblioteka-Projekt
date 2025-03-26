@@ -5,12 +5,29 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
-    alert('Zalogowano!');
+
+    try {
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message); // Show success message
+      } else {
+        alert(data.error); // Show error message
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Wystąpił błąd podczas logowania.');
+    }
   };
 
   return (

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Header';
 import Login from './Login';
 import Main from './Main';
+import Popular from './Popular';
+import Categories from './Categories';
 import '../styles/App.css';
 
 function App() {
@@ -35,12 +37,16 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div className="Wrapper">
         <Header />
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
+        <div className="Content">
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/popularne" element={<Popular />} />
+            <Route path="/kategorie" element={<Categories />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );

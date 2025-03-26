@@ -27,8 +27,20 @@ npm start
 3. Ustaw Back-End (Python/Flask)
 ```
 cd flask-server
-python -m venv {nazwa środowkiska}
-./{środowisko}/Script/activate
-pip install flask
+python -m venv {nazwa_środowiska}
+```
+W zależności od wersji Pythona
+```
+./{nazwa_środowiska}/Scripts/activate
+```
+Lub
+
+```
+source ./{nazwa_środowiska}/bin/activate
+```
+
+Następnie zainstaluj wymagane pakiety i uruchom serwer:
+```
+pip install -r requirements.txt
 python server.py
 ```
