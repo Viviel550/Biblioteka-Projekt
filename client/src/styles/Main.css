@@ -1,0 +1,69 @@
+.main {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .collection {
+    margin-top: 2rem;
+  }
+  
+  .collection h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .books {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .book {
+    margin: 1rem;
+    text-align: center;
+  }
+  
+  .book-cover-container {
+    position: relative;
+    width: 150px;
+    height: 225px; /* Adjust height to maintain aspect ratio */
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .book-cover {
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+  }
+  
+  .book-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: orange;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .book-cover-container:hover .book-cover {
+    opacity: 0;
+  }
+  
+  .book-cover-container:hover .book-title {
+    opacity: 1;
+  }
+  
+  .book p {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #333;
+  }

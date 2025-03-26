@@ -1,0 +1,38 @@
+.header {
+    background-color: #f5f5dc; /* Light beige background */
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo img {
+    height: 50px; /* Adjust the height as needed */
+  }
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-item {
+    margin-left: 1.25rem;
+    text-decoration: none;
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .nav-item:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .nav-item.right {
+    margin-left: auto;
+  }
