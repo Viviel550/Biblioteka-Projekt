@@ -1,0 +1,125 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.App {
+  text-align: center;
+  background: linear-gradient(to bottom right, #f0e68c, #dda0dd); /* Light khaki to plum gradient */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.error h1 {
+  font-size: 2rem;
+  color: red;
+}
+
+/* New styles for Wrapper and Content */
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the wrapper covers the full viewport height */
+}
+
+.Header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background-color: #f5f5dc;
+  box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.1);
+}
+
+.Content {
+  margin-top: 0rem; /* Add space equal to the height of the fixed header */
+  flex: 1; /* Allow the content to grow and fill the remaining space */
+  padding: 1rem; /* Add padding for better spacing */
+  background: linear-gradient(to bottom right, #f0e68c, #dda0dd); /* Optional: Add a background color for the content */
+}
+
+.genres {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  padding: 20px;
+}
+
+.genre button {
+  height: auto;
+  width: auto;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.genre button:hover {
+  background-color: blue;
+  color: white;
+}
+
+.genre button.active {
+  font-weight: bold;
+  background-color: #e0e0e0;
+}
+
+.books-section {
+  margin-top: 2rem;
+}
+
+.books {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
