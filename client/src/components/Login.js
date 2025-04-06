@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('user_id');
+    if (token && userId) {
+      // User is already logged in, redirect to UserPanel
+      navigate('/Panel');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,16 +29,20 @@ function Login() {
         body: JSON.stringify({ username, password }),
       });
 
+      if (!response.ok) {
+        throw new Error('Nieprawidłowa nazwa użytkownika lub hasło.');
+      }
+
       const data = await response.json();
 
-      if (response.ok) {
-        alert(data.message); // Show success message
-      } else {
-        alert(data.error); // Show error message
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Wystąpił błąd podczas logowania.');
+      // Save the JWT token and user_id in local storage
+      localStorage.setItem('token', data.token); // Assuming the backend sends a JWT token
+      localStorage.setItem('user_id', data.user.user_id);
+
+      // Redirect to the UserPanel
+      window.location.href = '/Panel';
+    } catch (err) {
+      setError(err.message);
     }
   };
 

@@ -5,6 +5,7 @@ import Login from './Login';
 import Main from './Main';
 import Popular from './Popular';
 import Categories from './Categories';
+import UserPanel from './UserPanel'; // Import the UserPanel component  
 import '../styles/App.css';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/popularne" element={<Popular />} />
             <Route path="/kategorie" element={<Categories />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/Panel" element={<UserPanel />} />
           </Routes>
         </div>
       </div>
