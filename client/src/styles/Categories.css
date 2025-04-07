@@ -49,7 +49,7 @@ html, body, #root {
   }
 }
 
-.error {
+.errorCategories {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,7 +57,7 @@ html, body, #root {
   text-align: center;
 }
 
-.error h1 {
+.errorCategories h1 {
   font-size: 2rem;
   color: red;
 }

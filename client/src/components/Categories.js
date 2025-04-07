@@ -65,7 +65,7 @@ function GetGenres() {
   };
 
   if (error) {
-      return <div className="error"><h1>Strona Tymczasowo Niedostępna</h1></div>;
+      return <div className="errorCategories"><h1>Strona Tymczasowo Niedostępna</h1></div>;
   }
 
   return (
