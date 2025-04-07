@@ -7,7 +7,7 @@ auth = Blueprint('auth', __name__)
 
 # PostgreSQL connection details for Supabase
 DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-DB_NAME = "Biblioteka"  
+DB_NAME = "postgres"  
 DB_USER = "postgres.dnmzlvofeecsinialsps"
 DB_PASSWORD = "projekt!szkolny"
 
