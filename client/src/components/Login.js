@@ -1,9 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('user_id');
+    const workerId = localStorage.getItem('worker_id'); // Assuming you store worker ID in local storage
+    const userRole = localStorage.getItem('user_role'); // Assuming you store user role in local storage
+    if (token) {
+        if(workerId && userRole === 'Bibliotekarz'){
+            // User is already logged in, redirect to WorkerPanel
+            navigate('/WorkerPanel');
+        }
+        else if(workerId && userRole === 'Administrator'){
+            // User is already logged in, redirect to AdminPanel
+            navigate('/AdminPanel');
+        }
+        else if(userId){
+            // User is already logged in, redirect to UserPanel
+            navigate('/Panel');
+        }
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,16 +41,21 @@ function Login() {
         body: JSON.stringify({ username, password }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Wystąpił nieznany błąd.');
+      }
+
       const data = await response.json();
 
-      if (response.ok) {
-        alert(data.message); // Show success message
-      } else {
-        alert(data.error); // Show error message
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Wystąpił błąd podczas logowania.');
+      // Save the JWT token and user_id in local storage
+      localStorage.setItem('token', data.token); // Assuming the backend sends a JWT token
+      localStorage.setItem('user_id', data.user.user_id);
+
+      // Redirect to the UserPanel
+      window.location.href = '/Panel';
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -54,7 +83,9 @@ function Login() {
             required 
           />
         </div>
+        <p className="error">{error || '\u00A0'}</p>
         <button type="submit" class = "LoginButton" >Zaloguj</button>
+        <button type="button" class = "LoginButton" onClick={() => navigate('/WorkerLogin')}>Zaloguj Jako Pracownik</button>
       </form>
     </div>
   );

@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Header';
 import Login from './Login';
+import WorkerLogin from './WorkerLogin'; // Import the WorkerLogin component
 import Main from './Main';
 import Popular from './Popular';
 import Categories from './Categories';
+import UserPanel from './UserPanel'; // Import the UserPanel component  
+import AdminPanel from './AdminPanel';
+import WorkerPanel from './WorkerPanel'; // Import the WorkerPanel component
 import '../styles/App.css';
 
 function App() {
@@ -29,7 +33,7 @@ function App() {
 
   if (error) {
     return (
-      <div className="error">
+      <div className="errorApp">
         <h1>Strona Tymczasowo Niedostępna</h1>
       </div>
     );
@@ -45,6 +49,10 @@ function App() {
             <Route path="/popularne" element={<Popular />} />
             <Route path="/kategorie" element={<Categories />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/Panel" element={<UserPanel />} />
+            <Route path="/AdminPanel" element={<AdminPanel />} />
+            <Route path="/WorkerLogin" element={<WorkerLogin />} /> 
+            <Route path="/WorkerPanel" element={<WorkerPanel />} />
           </Routes>
         </div>
       </div>
