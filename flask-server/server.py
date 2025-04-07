@@ -1,11 +1,14 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 import requests, logging, sys, os
 from blueprints.login import auth
+from blueprints.categories import categories_bp
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__)
+app.secret_key = 'lubiekotki123'
 
-# register the login blueprint
-app.register_blueprint(auth)  
+# Register blueprints
+app.register_blueprint(auth)
+app.register_blueprint(categories_bp)  
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -27,6 +30,7 @@ def testbooks():
 
     logging.info(f"Total books fetched: {len(books)}")
     return jsonify(books)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
