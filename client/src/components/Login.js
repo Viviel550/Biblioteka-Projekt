@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import '../styles/Login.css';
 
 function Login() {
@@ -10,23 +11,24 @@ function Login() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('user_id');
-    const workerId = localStorage.getItem('worker_id'); // Assuming you store worker ID in local storage
-    const userRole = localStorage.getItem('user_role'); // Assuming you store user role in local storage
+    const decodedToken = token ? jwtDecode(token) : null;
     if (token) {
-        if(workerId && userRole === 'Bibliotekarz'){
-            // User is already logged in, redirect to WorkerPanel
-            navigate('/WorkerPanel');
-        }
-        else if(workerId && userRole === 'Administrator'){
-            // User is already logged in, redirect to AdminPanel
-            navigate('/AdminPanel');
-        }
-        else if(userId){
-            // User is already logged in, redirect to UserPanel
-            navigate('/Panel');
-        }
-    }
+      if(decodedToken.worker_id && decodedToken.rola === 'Bibliotekarz'){
+          // User is already logged in, redirect to WorkerPanel
+          navigate('/WorkerPanel');
+          return;
+      }
+      else if(decodedToken.worker_id && decodedToken.rola  === 'Administrator'){
+          // User is already logged in, redirect to AdminPanel
+          navigate('/AdminPanel');
+          return;
+      }
+      else if (decodedToken.user_id){
+          // User is already logged in, redirect to UserPanel
+          navigate('/Panel');
+          return;
+      }
+  }
   }, [navigate]);
 
   const handleSubmit = async (e) => {
