@@ -11,21 +11,22 @@ function WorkerLogin() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const workerId = localStorage.getItem('worker_id'); // Assuming you store worker ID in local storage
-    const userId = localStorage.getItem('user_id'); // Assuming you store user ID in local storage
-    const userRole = localStorage.getItem('user_role'); // Assuming you store user role in local storage
+    const decodedToken = token ? jwtDecode(token) : null;
     if (token) {
-        if(workerId && userRole === 'Bibliotekarz'){
+        if(decodedToken.worker_id && decodedToken.rola === 'Bibliotekarz'){
             // User is already logged in, redirect to WorkerPanel
             navigate('/WorkerPanel');
+            return;
         }
-        else if(workerId && userRole === 'Administrator'){
+        else if(decodedToken.worker_id && decodedToken.rola  === 'Administrator'){
             // User is already logged in, redirect to AdminPanel
             navigate('/AdminPanel');
+            return;
         }
-        else if (userId){
+        else if (decodedToken.user_id){
             // User is already logged in, redirect to UserPanel
             navigate('/Panel');
+            return;
         }
     }
   }, [navigate]);
@@ -51,16 +52,16 @@ function WorkerLogin() {
       const data = await response.json();
       const decodedToken = jwtDecode(data.token);
   
-      // Save the JWT token and user details in local storage
+      // Save the JWT token that holds the worker_id and role in local storage
       localStorage.setItem('token', data.token);
-      localStorage.setItem('worker_id', decodedToken.worker_id);
-      localStorage.setItem('user_role', decodedToken.rola);
-  
+
       // Redirect based on role
       if (decodedToken.rola === 'Bibliotekarz') {
-        navigate('/WorkerPanel');
+        window.location.href = '/WorkerPanel';
+        return;
       } else if (decodedToken.rola === 'Administrator') {
-        navigate('/AdminPanel');
+        window.location.href = '/AdminPanel';
+        return;
       } else {
         throw new Error('Nieprawidłowa rola użytkownika.');
       }

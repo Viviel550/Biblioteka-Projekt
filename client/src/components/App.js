@@ -13,10 +13,16 @@ import '../styles/App.css';
 
 function App() {
   const [error, setError] = useState(false);
+  const [isChecking, setIsChecking] = useState(true); // New state to track delay
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsChecking(false); // Allow error to be shown after delay
+    }, 100); 
+
     fetch('/testbooks')
       .then(response => {
+        clearTimeout(timeout); // Clear timeout if the response is successful
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -24,12 +30,24 @@ function App() {
       })
       .then(data => {
         // Do nothing with data, just checking connection
+        setIsChecking(false); // Backend is reachable, stop checking
       })
       .catch(error => {
         console.error('Error fetching books:', error);
         setError(true);
+        setIsChecking(false); // Stop checking after error
       });
+
+    return () => clearTimeout(timeout); // Cleanup timeout on unmount
   }, []);
+
+  if (isChecking) {
+    return (
+      <div className="Wrapper">
+        
+      </div>
+    );
+  }
 
   if (error) {
     return (

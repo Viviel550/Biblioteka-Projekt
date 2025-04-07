@@ -1,16 +1,33 @@
 import React, {useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import '../styles/UserPanel.css';
 
 function UserPanel() {
-    // Check if the user is logged in by checking for token and user_id in local storage
+    const navigate = useNavigate();
     useEffect(() => {
         const token = localStorage.getItem('token');
-        const userId = localStorage.getItem('user_id');
-        if (!token || !userId) {
-            // User is not logged in, redirect to the login page
-            window.location.href = '/login';
+        if (!token ) {
+            navigate('/login');
+            return;
         }
-    }, []);
+        try{
+            const decodedToken = jwtDecode(token);
+            if(decodedToken.exp < Date.now() / 1000) {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+                return;
+            }
+            if(!decodedToken.user_id) {
+                navigate('/login');
+                return;
+            }
+        } catch (error) {
+            console.error('Invalid token:', error);
+            window.location.href = '/login'; // Redirect if token is invalid
+            return;
+        }
+    }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');

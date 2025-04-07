@@ -6,7 +6,16 @@ html, body, #root {
   -ms-overflow-style: none;
 }
 
+
 .App {
+  text-align: center;
+  background: linear-gradient(to bottom right, #f0e68c, #dda0dd); /* Light khaki to plum gradient */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.loadingApp{
   text-align: center;
   background: linear-gradient(to bottom right, #f0e68c, #dda0dd); /* Light khaki to plum gradient */
   min-height: 100vh;

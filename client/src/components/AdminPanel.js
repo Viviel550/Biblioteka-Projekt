@@ -1,17 +1,40 @@
 import React, {useEffect} from 'react';
 import '../styles/UserPanel.css';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 function AdminPanel() {
     // Check if the user is logged in by checking for token and user_id in local storage
+    const navigate = useNavigate();
     useEffect(() => {
         const token = localStorage.getItem('token');
-        const workerId = localStorage.getItem('worker_id');
-        const userRole = localStorage.getItem('user_role'); // Assuming you store user role in local storage
-        if (!token || !workerId || userRole !== 'Administrator') { 
-            // User is not logged in, redirect to the login page
-            window.location.href = '/login';
+        if (!token) {
+          // No token, redirect to login
+          navigate('/login');
+          return;
         }
-    }, []);
+    
+        try {
+          const decodedToken = jwtDecode(token);
+          // Check if the token has expired
+          if (decodedToken.exp < Date.now() / 1000) {
+            // Token has expired, redirect to login
+            localStorage.removeItem('token'); // Clear expired token
+            window.location.href = '/login';
+            return;
+          }
+          // Check if the user has the correct role
+          if (decodedToken.rola !== 'Administrator') {
+            // User is not an admin, redirect to login
+            navigate('/login');
+            return;
+          }
+        } catch (error) {
+          console.error('Invalid token:', error);
+          navigate('/login'); // Redirect if token is invalid
+          return;
+        }
+      }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');

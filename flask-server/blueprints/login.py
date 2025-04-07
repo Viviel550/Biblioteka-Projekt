@@ -5,11 +5,11 @@ import datetime  # For token expiration
 
 auth = Blueprint('auth', __name__)
 
-# PostgreSQL connection details
-DB_HOST = "localhost"
-DB_NAME = "Biblioteka"
-DB_USER = "postgres"
-DB_PASSWORD = "123"
+# PostgreSQL connection details for Supabase
+DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
+DB_NAME = "postgres"  
+DB_USER = "postgres.dnmzlvofeecsinialsps"
+DB_PASSWORD = "projekt!szkolny"
 
 # Secret key for signing JWT tokens
 SECRET_KEY = "secret"  # Replace with a secure, random key
@@ -36,7 +36,7 @@ def login():
                 query = """
                     SELECT row_to_json(users) 
                     FROM users 
-                    WHERE name = %s AND password = %s
+                    WHERE name = %s AND password = crypt(%s, password);
                 """
                 cursor.execute(query, (username, password))
                 result = cursor.fetchone()
@@ -48,7 +48,7 @@ def login():
                     token = jwt.encode(
                         {
                             "user_id": user_data["user_id"],
-                            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)  # Token expires in 1 hour
+                            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)  # Token expires in 8 hours
                         },
                         SECRET_KEY,
                         algorithm="HS256"
@@ -65,7 +65,7 @@ def login():
 
     except psycopg.Error as e:
         return jsonify({"error": f"Wystąpił błąd: {str(e)}"}), 500
-    
+
 @auth.route('/workerlogin', methods=['POST'])
 def workerlogin():
     data = request.get_json()
@@ -90,7 +90,7 @@ def workerlogin():
                         SELECT e.*, ej.name AS role_name
                         FROM public."Employees" e
                         JOIN public."Employees_jobs" ej ON e.rola = ej.id
-                        WHERE e.id = %s AND e.password = %s
+                        WHERE e.id = %s AND e.password = crypt(%s, e.password)
                     ) t;
                 """
                 cursor.execute(query, (workerid, password))
@@ -103,7 +103,7 @@ def workerlogin():
                         {
                             "worker_id": user_data["id"],
                             "rola": user_data["role_name"],
-                            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)  # Token expires in 1 hour
+                            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)  # Token expires in 8 hours
                         },
                         SECRET_KEY,
                         algorithm="HS256"
