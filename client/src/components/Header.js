@@ -4,6 +4,7 @@ import '../styles/Header.css';
 function Header() {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('user_id');
+  const workerId = localStorage.getItem('worker_id'); // Assuming you store worker ID in local storage
   return (
     <header className="header">
       <div className="logo">
@@ -14,7 +15,7 @@ function Header() {
         <a href="/" className="nav-item">Strona Główna</a>
         <a href="/popularne" className="nav-item">Popularne</a>
         <a href="/kategorie" className="nav-item ">Kategorie</a>
-        {token && userId ? (
+        {token && (userId || workerId)  ? (
           <a href="/Panel" className="nav-item">Profil</a> // Show "Profil" if logged in
         ) : (
           <a href="/login" className="nav-item">Zaloguj</a> // Show "Zaloguj" if not logged in
