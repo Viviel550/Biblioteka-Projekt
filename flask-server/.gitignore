@@ -1,3 +1,7 @@
 #Debug files
 /__pycache__/
 /.vscode/
+*/venv/
+*/env/
+*/.venv/
+/ven/
