@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, session
 import requests, logging, sys, os
 from blueprints.login import auth
 from blueprints.categories import categories_bp
+from blueprints.register import reg
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__)
 app.secret_key = 'lubiekotki123'
@@ -9,7 +10,7 @@ app.secret_key = 'lubiekotki123'
 # Register blueprints
 app.register_blueprint(auth)
 app.register_blueprint(categories_bp)  
-
+app.register_blueprint(reg)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 

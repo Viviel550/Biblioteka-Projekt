@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Header';
 import Login from './Login';
-import WorkerLogin from './WorkerLogin'; // Import the WorkerLogin component
+import WorkerLogin from './WorkerLogin'; 
 import Main from './Main';
 import Popular from './Popular';
 import Categories from './Categories';
-import UserPanel from './UserPanel'; // Import the UserPanel component  
+import UserPanel from './UserPanel';  
 import AdminPanel from './AdminPanel';
-import WorkerPanel from './WorkerPanel'; // Import the WorkerPanel component
+import WorkerPanel from './WorkerPanel'; 
+import Register from './Register';
 import '../styles/App.css';
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
             <Route path="/AdminPanel" element={<AdminPanel />} />
             <Route path="/WorkerLogin" element={<WorkerLogin />} /> 
             <Route path="/WorkerPanel" element={<WorkerPanel />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </div>
       </div>

@@ -55,3 +55,20 @@ h2 {
   .LoginButton:first-of-type{
     margin-top: 1rem;
   }
+
+  .worker-login-button {
+    position: fixed;
+    bottom: 1em;
+    width: 20em;
+    right: 1em;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .worker-login-button:hover {
+    background-color: #0056b3;
+  }

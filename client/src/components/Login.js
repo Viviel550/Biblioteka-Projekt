@@ -62,6 +62,7 @@ function Login() {
   };
 
   return (
+    <>
     <div className="login">
       <h2>Logowanie</h2>
       <form onSubmit={handleSubmit}>
@@ -87,9 +88,11 @@ function Login() {
         </div>
         <p className="error">{error || '\u00A0'}</p>
         <button type="submit" class = "LoginButton" >Zaloguj</button>
-        <button type="button" class = "LoginButton" onClick={() => navigate('/WorkerLogin')}>Zaloguj Jako Pracownik</button>
       </form>
+      <button type ="button" class = "LoginButton" onClick={() => navigate('/Register')}>Zarejestruj</button>
     </div>
+    <button type="button" class = "worker-login-button" onClick={() => navigate('/WorkerLogin')}>Zaloguj Jako Pracownik</button>
+    </>
   );
 }
 
