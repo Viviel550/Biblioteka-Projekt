@@ -3,8 +3,10 @@ import requests, logging, sys, os
 from blueprints.login import auth
 from blueprints.categories import categories_bp
 from blueprints.register import reg
+from blueprints.workerpanel import workerpanel
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__)
+app.register_blueprint(workerpanel)
 app.secret_key = 'lubiekotki123'
 
 # Register blueprints
