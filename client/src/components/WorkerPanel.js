@@ -8,7 +8,9 @@ function WorkerPanel() {
     const [activeTab, setActiveTab] = useState('profile');
     const [profile, setProfile] = useState(null);
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [deactivateId, setDeactivateId] = useState('');
 
     const token = localStorage.getItem('token');
@@ -68,17 +70,26 @@ function WorkerPanel() {
     };
 
     const updatePassword = () => {
-        fetch('http://localhost:3000/worker/password', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ password }),
-        })
-            .then(res => res.json())
-            .then(data => alert(data.message || data.error));
-    };
+      if (newPassword !== confirmPassword) {
+          alert("Nowe hasła się nie zgadzają.");
+          return;
+      }
+  
+      fetch('http://localhost:3000/worker/password', {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+              old_password: oldPassword,
+              new_password: newPassword,
+          }),
+      })
+          .then(res => res.json())
+          .then(data => alert(data.message || data.error));
+  };
+  
 
     const deactivateUser = () => {
         fetch(`http://localhost:3000/worker/deactivate-user/${deactivateId}`, {
@@ -126,9 +137,21 @@ function WorkerPanel() {
                         <h3>Zmień hasło</h3>
                         <input
                             type="password"
+                            placeholder="Obecne hasło"
+                            value={oldPassword}
+                            onChange={(e) => setOldPassword(e.target.value)}
+                        />
+                        <input
+                            type="password"
                             placeholder="Nowe hasło"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Powtórz nowe hasło"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                         <button onClick={updatePassword}>Zmień hasło</button>
                     </div>

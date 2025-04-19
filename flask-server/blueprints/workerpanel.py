@@ -98,24 +98,46 @@ def update_email():
 def update_password():
     worker_id = request.worker_id
     data = request.get_json()
-    new_password = data.get("password")
-    if not new_password:
-        return jsonify({"error": "Nowe hasło jest wymagane"}), 400
+    old_password = data.get("old_password")
+    new_password = data.get("new_password")
+
+    if not old_password or not new_password:
+        return jsonify({"error": "Wszystkie pola są wymagane"}), 400
 
     try:
         with psycopg.connect(
             host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
         ) as conn:
             with conn.cursor() as cur:
+                # Pobierz aktualne hasło i porównaj
+                cur.execute("""
+                    SELECT password FROM public."Employees" WHERE id = %s
+                """, (worker_id,))
+                row = cur.fetchone()
+                if not row:
+                    return jsonify({"error": "Nie znaleziono pracownika"}), 404
+
+                # Sprawdź stare hasło
+                cur.execute("""
+                    SELECT id FROM public."Employees"
+                    WHERE id = %s AND password = crypt(%s, password)
+                """, (worker_id, old_password))
+                if not cur.fetchone():
+                    return jsonify({"error": "Obecne hasło jest nieprawidłowe"}), 401
+
+                # Zmień hasło
                 cur.execute("""
                     UPDATE public."Employees"
                     SET password = crypt(%s, gen_salt('bf'))
                     WHERE id = %s
                 """, (new_password, worker_id))
                 conn.commit()
-                return jsonify({"message": "Hasło zaktualizowane pomyślnie"}), 200
+
+                return jsonify({"message": "Hasło zostało zmienione"}), 200
+
     except psycopg.Error as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 # 3. Dezaktywacja użytkownika (teoretyczna)
