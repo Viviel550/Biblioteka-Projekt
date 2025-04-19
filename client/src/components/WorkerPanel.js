@@ -1,62 +1,177 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import '../styles/UserPanel.css';
+import '../styles/WorkerPanel.css';
 
 function WorkerPanel() {
     const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState('profile');
+    const [profile, setProfile] = useState(null);
+    const [email, setEmail] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [deactivateId, setDeactivateId] = useState('');
+
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
         if (!token) {
-        // No token, redirect to login
             navigate('/login');
             return;
         }
 
         try {
             const decodedToken = jwtDecode(token);
+            const currentTime = Date.now() / 1000;
 
-            // Check if the token has expired
-            const currentTime = Date.now() / 1000; // Current time in seconds
             if (decodedToken.exp < currentTime) {
-                // Token has expired, redirect to login
-                localStorage.removeItem('token'); // Clear expired token
+                localStorage.clear();
                 window.location.href = '/login';
                 return;
             }
-            // Check if the user has the correct role
+
             if (decodedToken.rola !== 'Bibliotekarz') {
-                // User is not a worker, redirect to login
                 navigate('/login');
                 return;
-            }  
-        } catch (error) {
-            console.error('Invalid token:', error);
-            navigate('/login'); // Redirect if token is invalid
+            }
+
+            if (activeTab === 'profile') {
+                fetch('http://localhost:3000/worker/profile', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((res) => res.json())
+                    .then((data) => setProfile(data));
+            }
+        } catch (err) {
+            console.error('Invalid token:', err);
+            navigate('/login');
         }
-    }, [navigate]);
+    }, [navigate, activeTab, token]);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('worker_id');
-        localStorage.removeItem('user_role'); // Remove user role from local storage
-        
+        localStorage.clear();
         window.location.href = '/login';
     };
+
+    const updateEmail = () => {
+        fetch('http://localhost:3000/worker/email', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ email }),
+        })
+            .then(res => res.json())
+            .then(data => alert(data.message || data.error));
+    };
+
+    const updatePassword = () => {
+      if (newPassword !== confirmPassword) {
+          alert("Nowe hasła się nie zgadzają.");
+          return;
+      }
+  
+      fetch('http://localhost:3000/worker/password', {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+              old_password: oldPassword,
+              new_password: newPassword,
+          }),
+      })
+          .then(res => res.json())
+          .then(data => alert(data.message || data.error));
+  };
+  
+
+    const deactivateUser = () => {
+        fetch(`http://localhost:3000/worker/deactivate-user/${deactivateId}`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => res.json())
+            .then(data => alert(data.message || data.error));
+    };
+
     return (
-        <div className="user-panel">
-            <h2>Panel Pracownika</h2>
-            <div className="user-info">
-                <h3>Witaj, {localStorage.getItem('worker_id')}</h3>
-                <p>Twoje konto jest aktywne.</p>
+        <div className="worker-panel">
+            <div className="sidebar">
+                <h2>Panel Pracownika</h2>
+                <button onClick={() => setActiveTab('profile')}>Profil</button>
+                <button onClick={() => setActiveTab('edit')}>Edycja danych</button>
+                <button onClick={() => setActiveTab('users')}>Użytkownicy</button>
+                <button onClick={handleLogout}>Wyloguj</button>
             </div>
-            <div className="user-actions">
-                <button className="action-button">Zarządzaj Książkami</button>
-                <button className="action-button">Zarządzaj Kontem</button>
-                <button className="action-button" onClick={handleLogout}>Wyloguj się</button>
+            <div className="content">
+                {activeTab === 'profile' && profile && (
+                    <div className="profile">
+                        <div className="avatar">[Zdjęcie]</div>
+                        <div>
+                            <p><strong>ID:</strong> {profile.id}</p>
+                            <p><strong>Imię i nazwisko:</strong> {profile.first_name} {profile.last_name}</p>
+                            <p><strong>Email:</strong> {profile.email}</p>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'edit' && (
+                    <div className="edit-section">
+                        <h3>Zmień email</h3>
+                        <input
+                            type="email"
+                            placeholder="Nowy email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <button onClick={updateEmail}>Zmień email</button>
+
+                        <h3>Zmień hasło</h3>
+                        <input
+                            type="password"
+                            placeholder="Obecne hasło"
+                            value={oldPassword}
+                            onChange={(e) => setOldPassword(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Nowe hasło"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Powtórz nowe hasło"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                        <button onClick={updatePassword}>Zmień hasło</button>
+                    </div>
+                )}
+
+                {activeTab === 'users' && (
+                    <div className="user-management">
+                        <h3>Dezaktywuj użytkownika</h3>
+                        <input
+                            type="number"
+                            placeholder="ID użytkownika"
+                            value={deactivateId}
+                            onChange={(e) => setDeactivateId(e.target.value)}
+                        />
+                        <button onClick={deactivateUser}>Dezaktywuj</button>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
+
 export default WorkerPanel;
