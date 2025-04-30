@@ -86,7 +86,7 @@ function Login() {
             required 
           />
         </div>
-        <p className="error">{error || '\u00A0'}</p>
+        <p className="error_Login">{error || '\u00A0'}</p>
         <button type="submit" class = "LoginButton" >Zaloguj</button>
       </form>
       <button type ="button" class = "LoginButton" onClick={() => navigate('/Register')}>Zarejestruj</button>

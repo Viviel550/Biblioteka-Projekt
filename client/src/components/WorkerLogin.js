@@ -101,7 +101,7 @@ function WorkerLogin() {
             required 
           />
         </div>
-        <p className="error">{error || '\u00A0'}</p>
+        <p className="error_Login">{error || '\u00A0'}</p>
         <button type="submit" class = "LoginButton" >Zaloguj</button>
         <button type="button" class = "LoginButton" onClick ={() => navigate('/login')}>Zaloguj Jako Użytkownik</button>
       </form>
