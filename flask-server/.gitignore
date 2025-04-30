@@ -5,3 +5,4 @@
 */env/
 */.venv/
 /ven/
+/blueprints/__pycache__/
