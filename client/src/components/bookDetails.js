@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import '../styles/bookDetails.css';
 
 function BookDetails() {
   const { slug } = useParams();
   const [details, setDetails] = useState({});
   const [error, setError] = useState(false);
+
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     fetch('/getBookDetails', {
@@ -31,9 +34,25 @@ function BookDetails() {
     setError(true);
   };
 
+  //dodanie do ulubionych
   const handleClickFavorites = (slug) => {
-    
+    if (!token) {
+      alert('Aby dodać książkę do ulubionych musisz się zalogować!');
+      return;
+    }
+
+    fetch('/addToFavorites', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ slug })
+    })
+    .then(response => response.json())
+    .then(data => alert(data.message || data.error));
   };
+
 
   if (error) {
       return <div className="errorCategories"><h1>Strona Tymczasowo Niedostępna</h1></div>;
@@ -73,7 +92,7 @@ function BookDetails() {
             </a>
           </div>
           <div className='details-favorites'>
-            <button onClick={() => handleClickFavorites(details.slug)}>Dodaj do ulubionych</button>
+            <button onClick={() => handleClickFavorites(slug)}>Dodaj do ulubionych</button>
           </div>
         </div>
       </div>
