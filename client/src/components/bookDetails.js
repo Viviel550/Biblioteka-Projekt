@@ -59,15 +59,18 @@ function BookDetails() {
 
   //uzyskanie user_id z tokenu
   let user_Id_token = null;
+  let decodedToken = null;
   try {
     const token = localStorage.getItem('token');
     if (token) {
-      const decoded = jwtDecode(token);
-      user_Id_token = decoded.user_id;
+      decodedToken = jwtDecode(token);
+      user_Id_token = decodedToken.user_id;
     }
   } catch (e) {
     user_Id_token = null;
+    decodedToken = null;
   }
+
 
 
   //pobranie szczegółów
@@ -162,6 +165,10 @@ function BookDetails() {
   const handleClickAddOpinion = (slug) => {
     if (!token) {
       alert('Aby dodać opinię musisz się zalogować!');
+      return;
+    }
+    if (decodedToken.rola==="Bibliotekarz"){
+      alert('Nie możesz dodawać komentarzy.');
       return;
     }
     setShowOpinionPopup(true);
@@ -270,7 +277,7 @@ function BookDetails() {
                 <div className="opinion-content">
                   {opinion.review}
                 </div>
-                {user_Id_token && opinion.user_id === user_Id_token && (
+                {((user_Id_token && opinion.user_id === user_Id_token) || decodedToken.rola === "Bibliotekarz") && (
                   <button
                     className="delete-opinion-btn"
                     onClick={() => handleDeleteOpinion(opinion.review_id)}

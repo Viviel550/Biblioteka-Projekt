@@ -27,8 +27,10 @@ def token_required(f):
         try:
             if token.startswith("Bearer "):
                 token = token.split(" ")[1]
-            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            request.user_id = decoded.get("user_id")
+            decodedToken = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            request.user_id = decodedToken.get("user_id")
+            request.rola = decodedToken.get("rola")
+            request.worker_id = decodedToken.get("worker_id")
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token wygasł"}), 401
         except jwt.InvalidTokenError:
@@ -229,14 +231,37 @@ def addOpinion():
 @token_required
 def deleteOpinion():
     user_id = request.user_id
+    worker_id = request.worker_id
+    rola = request.rola
     data = request.get_json()
     review_id = data.get('review_id') if data else None
     if not review_id:
         return jsonify({'error': 'Brak review_id'}), 400
     
-    logging.info(f"Received review_id: {review_id} for delete, by user: {user_id}.")
+
+    if(rola == "Bibliotekarz"):
+        try:
+            logging.info(f"Received review_id: {review_id} for delete, by Bibliotekarz: {worker_id}.")
+            with psycopg.connect(
+                host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
+            ) as conn:
+                with conn.cursor() as cur:
+                    # usunięcie opini przez Bibliotekarza
+                    cur.execute("""
+                        DELETE FROM public.book_reviews 
+                        WHERE review_id = %s 
+                    """, (review_id,))
+
+                    if cur.rowcount == 0:
+                        return jsonify({"error": "Nie znaleziono opinii."}), 404
+
+                    conn.commit()
+                    return jsonify({"message": "Opinia usunięta przez Bibliotekarza!"}), 200           
+        except psycopg.Error as e:
+            return jsonify({"error": str(e)}), 500
 
     try:
+        logging.info(f"Received review_id: {review_id} for delete, by user: {user_id}.")
         with psycopg.connect(
             host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
         ) as conn:
