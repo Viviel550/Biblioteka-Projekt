@@ -4,6 +4,7 @@ from blueprints.login import auth
 from blueprints.categories import categories_bp
 from blueprints.register import reg
 from blueprints.workerpanel import workerpanel
+from blueprints.bookDetails import bookDetails_bp
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__)
 app.register_blueprint(workerpanel)
@@ -13,6 +14,7 @@ app.secret_key = 'lubiekotki123'
 app.register_blueprint(auth)
 app.register_blueprint(categories_bp)  
 app.register_blueprint(reg)
+app.register_blueprint(bookDetails_bp)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 

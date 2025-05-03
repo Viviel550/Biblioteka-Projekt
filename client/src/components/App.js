@@ -11,6 +11,7 @@ import AdminPanel from './AdminPanel';
 import WorkerPanel from './WorkerPanel'; 
 import Register from './Register';
 import '../styles/App.css';
+import BookDetails from './bookDetails';
 
 function App() {
   const [error, setError] = useState(false);
@@ -73,6 +74,7 @@ function App() {
             <Route path="/WorkerLogin" element={<WorkerLogin />} /> 
             <Route path="/WorkerPanel" element={<WorkerPanel />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/book/:slug" element={<BookDetails />} />
           </Routes>
         </div>
       </div>

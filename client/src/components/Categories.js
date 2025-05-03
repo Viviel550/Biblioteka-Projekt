@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './Header';
-import Login from './Login';
-import Main from './Main';
-import Popular from './Popular';
-import Categories from './Categories';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Categories.css';
 
 function GetGenres() {
@@ -13,6 +8,7 @@ function GetGenres() {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Pobieranie gatunków
   useEffect(() => {
@@ -48,7 +44,7 @@ function GetGenres() {
           })
           .catch((error) => {
             handleError(error);
-            setIsLoading(false); // Koniec ładowania nawet przy błędzie
+            setIsLoading(false); // Koniec ładowania
           });
           
       }
@@ -98,7 +94,7 @@ function GetGenres() {
                         <div className="books">
                           {books.map((book, index) => (
                             <div key={index} className="book">
-                              <a href={book.url} target="_blank" rel="noopener noreferrer">
+                              <div onClick={() => navigate(`/book/${book.slug}`)} style={{ cursor: 'pointer' }}>
                                 <div className="book-cover-container">
                                   <img 
                                     src={`https://wolnelektury.pl/media/${book.cover}`} 
@@ -107,7 +103,7 @@ function GetGenres() {
                                   />
                                   <div className="book-title">{book.title}</div>
                                 </div>
-                              </a>
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -120,21 +116,7 @@ function GetGenres() {
       </div>
   )
 
-  return (
-    <Router>
-      <div className="Wrapper">
-        <Header />
-        <div className="Content">
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/popularne" element={<Popular />} />
-            <Route path="/kategorie" element={<Categories />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </div>
-      </div>
-    </Router>
-  );
+  
 }
 
 export default GetGenres;
