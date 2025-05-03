@@ -145,7 +145,8 @@ html, body, #root {
 }
 
 .details-author,
-.details-translation {
+.details-translation,
+.details-avarage {
   font-size: 1.15rem;
   color: #6a4a7b;
   margin: 0.2rem 0;
@@ -218,11 +219,134 @@ html, body, #root {
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(80, 60, 120, 0.12);
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
   padding: 32px;
   max-width: 900px;
   width: 100%;
+}
+
+.opinions-section {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(80, 60, 120, 0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+
+.opinions-title {
+  font-size: 1.6rem;
+  color: #4b2262;
+  margin-bottom: 1.4rem;
+  text-align: center;
+}
+
+.opinions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.opinion-item {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 1.2em;
+  padding-bottom: 1.2em;
+  background: #faf7ff;
+  border-radius: 8px;
+  padding: 1em 1.2em;
+}
+
+.opinion-header {
+  display: flex;
+  gap: 2em;
+  font-size: 0.98em;
+  color: #5a3472;
+  margin-bottom: 0.35em;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.opinion-header span {
+  white-space: nowrap;
+}
+
+.opinion-content {
+  margin-left: 0.1em;
+  font-size: 1.05em;
+  color: #222;
+  margin-top: 0.2em;
+  word-break: break-word;
+}
+
+.opinions-add {
+  margin-top: 1.5rem;
+  align-self: center;
+}
+
+.opinions-add button{
+  display: inline-block;
+  background-color: grey;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.opinions-add button:hover {
+  background-color: blue;
+  color: white;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex; 
+  align-items: center;
   justify-content: center;
+  z-index: 1000;
+}
+.popup-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  position: relative;
+}
+.close-btn {
+  position: absolute; top: 10px; right: 10px;
+}
+.popup-textarea{
+  height: 200px;
+  width: 400px;
+}
+.popup-content button{
+  display: inline-block;
+  background-color: grey;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.popup-content button:hover {
+  background-color: blue;
+  color: white;
+}
+
+.delete-opinion-btn{
+  display: inline-block;
+  background-color: grey;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.delete-opinion-btn:hover {
+  background-color: blue;
+  color: white;
 }
