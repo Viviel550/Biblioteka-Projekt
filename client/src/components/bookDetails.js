@@ -167,7 +167,7 @@ function BookDetails() {
       alert('Aby dodać opinię musisz się zalogować!');
       return;
     }
-    if (decodedToken.rola==="Bibliotekarz"){
+    if (decodedToken && decodedToken.rola==="Bibliotekarz"){
       alert('Nie możesz dodawać komentarzy.');
       return;
     }
@@ -277,7 +277,7 @@ function BookDetails() {
                 <div className="opinion-content">
                   {opinion.review}
                 </div>
-                {((user_Id_token && opinion.user_id === user_Id_token) || decodedToken.rola === "Bibliotekarz") && (
+                {((user_Id_token && opinion.user_id === user_Id_token) || (decodedToken && decodedToken.rola === "Bibliotekarz")) && (
                   <button
                     className="delete-opinion-btn"
                     onClick={() => handleDeleteOpinion(opinion.review_id)}
