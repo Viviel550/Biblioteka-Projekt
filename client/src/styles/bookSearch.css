@@ -69,8 +69,25 @@
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #eee;
+  align-items: center;
+  width: 100%;
 }
 
+.book-info{
+  flex: 1;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 200px;
+}
+
+.book-info button {
+  align-self: center;
+  width: auto;
+  display: inline-block;
+  white-space: nowrap; 
+}
 
 .book-info h4 {
   color: #222;
@@ -96,4 +113,6 @@
 .search-book-cover{
   height: 200px;
   width: auto;
+  display: block;
 }
+
