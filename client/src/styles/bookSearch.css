@@ -1,0 +1,99 @@
+.bookSearch-popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.bookSearch-popup-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  position: relative;
+}
+.bookSearch-close-btn {
+  position: absolute; top: 10px; right: 10px;
+}
+.bookSearch-popup-textarea{
+  height: 50px;
+  width: 400px;
+}
+.bookSearch-popup-content button{
+  display: inline-block;
+  background-color: grey;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.bookSearch-popup-content button:hover {
+  background-color: blue;
+  color: white;
+}
+
+.bookSearch-popup-content label {
+  color: #222;
+  font-size: 1rem;
+  margin-right: 1.5rem;
+  font-weight: 500;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.bookSearch-popup-content input[type="radio"] {
+  margin-right: 0.4em;
+  vertical-align: middle;
+}
+
+.search-results {
+  margin-top: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+  color: black;
+}
+
+.results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.book-result {
+  display: flex;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+
+.book-info h4 {
+  color: #222;
+  font-weight: bold;
+}
+
+.book-info p {
+  color: #222;
+}
+
+.search-loading, .search-error {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.search-error {
+  color: red;
+  background: #ffeeee;
+  border-radius: 4px;
+}
+
+.search-book-cover{
+  height: 200px;
+  width: auto;
+}

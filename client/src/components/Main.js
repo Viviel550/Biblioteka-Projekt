@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "../styles/Main.css";
+import BookSearch from './bookSearch';
 
 const Library = () => {
     const [books, setBooks] = useState([]);
@@ -8,6 +9,7 @@ const Library = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [isBookSearchOpen, setIsBookSearchOpen] = useState(false);
   
     // Pobieranie książek z API WolneLektury
     useEffect(() => {
@@ -108,11 +110,13 @@ const Library = () => {
         <header className="header">
           <h1>BiblioStream</h1>
           <div className="search-bar">
-            <input 
-              type="text" 
-              placeholder="Szukaj książki..." 
+            <input
+              type="text"
+              placeholder="Szukaj książki lub autora..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
+              onClick={() => setIsBookSearchOpen(true)}
+              readOnly // jeśli chcesz, by wpisywanie było tylko w popupie
             />
           </div>
           <div className="categories">
@@ -273,6 +277,17 @@ const Library = () => {
           <p>&copy; 2025 BiblioStream - Twoja biblioteka online</p>
           <p>Dane pochodzą z <a href="https://wolnelektury.pl" target="_blank" rel="noopener noreferrer">WolneLektury.pl</a></p>
         </footer>
+        {isBookSearchOpen && (
+          <div className="popup-overlay">
+            <BookSearch
+              onClose={() => setIsBookSearchOpen(false)}
+              onSubmit={({ type, query }) => {
+                setSearchTerm(query);
+                setIsBookSearchOpen(false);
+              }}
+            />
+          </div>
+        )}
       </div>
     );
   };
