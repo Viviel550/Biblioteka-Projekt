@@ -13,7 +13,10 @@ function WorkerPanel() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [allUsers, setAllUsers] = useState([]);
     const [users, setUsers] = useState([]);
+    const [jobs, setJobs] = useState([]);
+    const [modalData, setModalData] = useState(null);
     const token = localStorage.getItem('token');
+
 
     useEffect(() => {
         if (!token) {
@@ -45,6 +48,7 @@ function WorkerPanel() {
                     .then((res) => res.json())
                     .then((data) => setProfile(data));
             }
+            
             if (activeTab === 'users') {
                 fetch('http://localhost:3000/admin/users', {
                     method: 'GET',
@@ -59,6 +63,23 @@ function WorkerPanel() {
                     })
                     .catch((err) => console.error('Error fetching users:', err));
 
+            }
+            if (activeTab === 'addworker') {
+                fetch('http://localhost:3000/admin/jobs', {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (!data.error) {
+                            setJobs(data); // Set job data
+                        } else {
+                            console.error('Error fetching jobs:', data.error);
+                        }
+                    })
+                    .catch((err) => console.error('Error fetching jobs:', err));
             }
         } catch (err) {
             console.error('Invalid token:', err);
@@ -102,8 +123,7 @@ function WorkerPanel() {
       })
           .then(res => res.json())
           .then(data => alert(data.message || data.error));
-  };
-  
+    };
 
     const handleDeleteUser = (userId) => {
         if (window.confirm('Czy na pewno chcesz usunąć tego użytkownika?')) {
@@ -124,12 +144,47 @@ function WorkerPanel() {
         }
     };
 
+    const addWorker = (e) => {
+        e.preventDefault();
+        const name = e.target.name.value;
+        const surname = e.target.surname.value;
+        const email = e.target.email.value;
+        const position = e.target.position.value;
+
+        fetch('http://localhost:3000/admin/createuser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name, surname, email, position }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.error) {
+                    setModalData({ userId: data.user_id, password: data.password }); // Set modal data
+                    e.target.reset(); // Clear the form after successful submission
+                }
+                else {
+                    alert(data.error);
+                }
+            })
+            .catch((err) => console.error('Error adding worker:', err));
+    };
+    const workerPositions = (e) => {
+    };
+
+    const closeModal = () => {
+        setModalData(null); // Close the modal
+    };
     return (
         <div className="worker-panel">
             <div className="sidebar">
                 <h2>Panel Główny</h2>
                 <button onClick={() => setActiveTab('profile')}>Profil</button>
                 <button onClick={() => setActiveTab('edit')}>Edycja danych</button>
+                <button onClick={() => setActiveTab('addworker')}>Dodanie Pracownika</button>
+                <button onClick={() => setActiveTab('delworker')}>Usunięcie Pracownika</button>
                 <button onClick={() => setActiveTab('users')}>Usunięcie Użytkownika</button>
                 <button onClick={handleLogout}>Wyloguj</button>
             </div>
@@ -239,8 +294,47 @@ function WorkerPanel() {
                       </table>
                   </div>
               )}
+
+                {activeTab === 'addworker' && (
+                    <div className="add-user">
+                        <h3>Dodaj Pracownika</h3>
+                        <form onSubmit={addWorker}>
+                            <input type="text" name="name" placeholder="Imię" required />
+                            <input type="text" name="surname" placeholder="Nazwisko" required />
+                            <input type="email" name="email" placeholder="Email" required />
+                            <select name="position" required>
+                                <option value="">Wybierz stanowisko</option>
+                                {jobs.map((job) => (
+                                    <option key={job.id} value={job.id}>
+                                        {job.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <button type="submit">Dodaj</button>
+                        </form>
+                    </div>
+                )}
+
+                {modalData && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <h3>Pracownik został dodany!</h3>
+                            <p><strong>ID:</strong> {modalData.userId}</p>
+                            <p><strong>Hasło:</strong> {modalData.password}</p>
+                            <button onClick={closeModal}>Zamknij</button>
+                        </div>
+                    </div>
+                )}
+                {activeTab === 'delworker' && (
+                    <div className="delete-user">
+                        <h3>Usuń Pracownika</h3>
+                        <input type="text" placeholder="ID Pracownika" />
+                        <button>Usuń</button>
+                    </div>
+                )}
             </div>
         </div>
+
     );
 }
 

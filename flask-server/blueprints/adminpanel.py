@@ -182,3 +182,66 @@ def deactivate_user(user_id):
                 return jsonify({"message": f"Użytkownik {user_id} został usunięty"}), 200
     except psycopg.Error as e:
         return jsonify({"error": str(e)}), 500
+
+@adminpanel.route('/admin/jobs', methods=['GET'])
+@token_required
+def get_jobs():
+    try:
+        with psycopg.connect(
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT id, name FROM public.\"Employees_jobs\" ORDER BY id ASC;")
+                jobs = cursor.fetchall()
+                return jsonify([{"id": job[0], "name": job[1]} for job in jobs]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@adminpanel.route('/admin/createuser', methods=['POST'])
+@token_required
+def create_user():
+    data = request.get_json()
+    name = data.get('name')
+    surname = data.get('surname')
+    email = data.get('email')
+    position = data.get('position')
+    if not name or not surname or not email or not position:
+        return jsonify({"error": "Wszystkie pola są wymagane"}), 400
+    
+    password = (name[:3] + surname[:3] + str(len(email))).lower()
+
+    try:
+        with psycopg.connect(
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as connection:
+            with connection.cursor() as cursor:
+                # Check if the username already exists and insert if it doesn't
+                query = """
+                    INSERT INTO public."Employees" (first_name, last_name, email, password, status, rola)
+                    SELECT %s, %s, %s, crypt(%s, gen_salt('bf', 10)), NULL, %s
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM public."Employees" WHERE email = %s
+                    )
+                    RETURNING id, password;
+                """
+                cursor.execute(query, (name, surname, email, password, position, email))
+                result = cursor.fetchone()
+
+                if not result:
+                    return jsonify({"error": "Użytkownik o podanej nazwie lub emailu już istnieje."}), 400
+
+                user_id = result[0]
+
+                # Commit the transaction
+                connection.commit()
+
+                return jsonify({"message": "Rejestracja zakończona sukcesem!", "user_id": user_id, "password": password}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
