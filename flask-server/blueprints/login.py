@@ -90,7 +90,7 @@ def workerlogin():
                         SELECT e.*, ej.name AS role_name
                         FROM public."Employees" e
                         JOIN public."Employees_jobs" ej ON e.rola = ej.id
-                        WHERE e.id = %s AND e.password = crypt(%s, e.password)
+                        WHERE e.id = %s AND e.password = crypt(%s, e.password) AND e.status IS DISTINCT FROM FALSE
                     ) t;
                 """
                 cursor.execute(query, (workerid, password))
@@ -118,5 +118,33 @@ def workerlogin():
                 else:
                     return jsonify({"error": "Nieprawidłowa nazwa użytkownika lub hasło."}), 401
 
+    except psycopg.Error as e:
+        return jsonify({"error": f"Wystąpił błąd: {str(e)}"}), 500
+
+@auth.route('/worker/set-password', methods=['PUT'])
+def set_worker_password():
+    data = request.get_json()
+    workerid = data.get('workerid')
+    new_password = data.get('new_password')
+
+    if not workerid or not new_password:
+        return jsonify({"error": "Identyfikator pracownika i nowe hasło są wymagane."}), 400
+
+    try:
+        with psycopg.connect(
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as connection:
+            with connection.cursor() as cursor:
+                query = """
+                    UPDATE public."Employees"
+                    SET password = crypt(%s, gen_salt('bf', 10)), status = TRUE
+                    WHERE id = %s;
+                """
+                cursor.execute(query, (new_password, workerid))
+                connection.commit()
+                return jsonify({"message": "Hasło zostało pomyślnie ustawione."}), 200
     except psycopg.Error as e:
         return jsonify({"error": f"Wystąpił błąd: {str(e)}"}), 500

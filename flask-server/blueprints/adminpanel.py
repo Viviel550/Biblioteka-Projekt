@@ -200,7 +200,8 @@ def get_jobs():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@adminpanel.route('/admin/createuser', methods=['POST'])
+
+@adminpanel.route('/admin/createworker', methods=['POST'])
 @token_required
 def create_user():
     data = request.get_json()
@@ -243,5 +244,73 @@ def create_user():
 
                 return jsonify({"message": "Rejestracja zakończona sukcesem!", "user_id": user_id, "password": password}), 201
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@adminpanel.route('/admin/workers', methods=['GET'])
+@token_required
+def get_workers():
+    try:
+        with psycopg.connect(
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT e.id, e.first_name, e.last_name,e.status, j.name AS job
+                    FROM public."Employees" e
+                    LEFT JOIN public."Employees_jobs" j ON e.rola = j.id
+                    ORDER BY e.id ASC;
+                """)
+                workers = cursor.fetchall()
+                return jsonify([
+                    {"id": worker[0], "name": worker[1], "surname": worker[2],"status": worker[3], "job": worker[4]}
+                    for worker in workers
+                ]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@adminpanel.route('/admin/deactivate-worker/<int:worker_id>', methods=['PUT'])
+@token_required
+def deactivate_worker(worker_id):
+    try:
+        with psycopg.connect(
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE public."Employees"
+                    SET status = FALSE
+                    WHERE id = %s;
+                """, (worker_id,))
+                connection.commit()
+                return jsonify({"message": f"Pracownik {worker_id} został dezaktywowany"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@adminpanel.route('/admin/reactivate-worker/<int:worker_id>', methods=['PUT'])
+@token_required
+def reactivate_worker(worker_id):
+    try:
+        with psycopg.connect(
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE public."Employees"
+                    SET status = TRUE
+                    WHERE id = %s;
+                """, (worker_id,))
+                connection.commit()
+                return jsonify({"message": f"Pracownik {worker_id} został reaktywowany"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
