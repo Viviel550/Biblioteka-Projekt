@@ -3,68 +3,365 @@
 .worker-panel {
     display: flex;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f0f0f;
+    color: #fff;
 }
 
+/* Sidebar - nowoczesny design */
 .sidebar {
-    width: 220px;
-    background: #f4f4f4;
-    padding: 20px;
-    border-right: 1px solid #ccc;
+    width: 280px;
+    background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+    padding: 2rem 1.5rem;
+    border-right: 1px solid #333;
     display: flex;
     flex-direction: column;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #e67e22, #d35400);
 }
 
 .sidebar h2 {
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #e67e22;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #333;
 }
 
 .sidebar button {
-    background: none;
-    border: none;
-    padding: 10px;
+    background: linear-gradient(135deg, transparent, rgba(230, 126, 34, 0.05));
+    border: 1px solid #333;
+    padding: 1rem 1.5rem;
     text-align: left;
-    font-size: 16px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(230, 126, 34, 0.1), transparent);
+    transition: left 0.3s ease;
 }
 
 .sidebar button:hover {
-    background-color: #ddd;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.1), rgba(211, 84, 0, 0.1));
+    border-color: #e67e22;
+    color: #e67e22;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.2);
 }
 
+.sidebar button:hover::before {
+    left: 100%;
+}
+
+/* Przycisk wyloguj - specjalny styl */
+.sidebar button:last-child {
+    margin-top: auto;
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), transparent);
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.sidebar button:last-child:hover {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(220, 53, 69, 0.1));
+    border-color: #dc3545;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+/* Główna zawartość */
 .content {
-    padding: 20px;
+    padding: 2rem 3rem;
     flex-grow: 1;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    position: relative;
 }
 
+.content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="%23333" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+/* Profil - sekcja */
 .profile {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 2rem;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.1), rgba(15, 15, 15, 0.9));
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid #333;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #e67e22, #d35400, #e67e22);
 }
 
 .avatar {
-    width: 100px;
-    height: 100px;
-    background: #ccc;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #e67e22, #d35400);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(230, 126, 34, 0.3);
+    position: relative;
 }
 
+.avatar::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #e67e22, #d35400, #e67e22, #d35400);
+    z-index: -1;
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.profile div:last-child p {
+    margin: 0.8rem 0;
+    font-size: 1.1rem;
+    color: #e0e0e0;
+}
+
+.profile div:last-child p strong {
+    color: #e67e22;
+    font-weight: 600;
+}
+
+/* Sekcje edycji i zarządzania */
+.edit-section,
+.user-management {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(15, 15, 15, 0.9));
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid #333;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.edit-section h3,
+.user-management h3 {
+    color: #e67e22;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #333;
+    position: relative;
+}
+
+.edit-section h3::after,
+.user-management h3::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, #e67e22, #d35400);
+}
+
+/* Inputy */
 .edit-section input,
 .user-management input {
     display: block;
-    margin: 10px 0;
-    padding: 8px;
-    width: 300px;
-    border: 1px solid #ccc;
+    margin: 1rem 0;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(15, 15, 15, 0.9));
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
+.edit-section input:focus,
+.user-management input:focus {
+    outline: none;
+    border-color: #e67e22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.05), rgba(26, 26, 26, 0.9));
+}
+
+.edit-section input::placeholder,
+.user-management input::placeholder {
+    color: #888;
+}
+
+/* Przyciski */
 .edit-section button,
 .user-management button {
-    padding: 8px 12px;
+    padding: 1rem 2rem;
     cursor: pointer;
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1rem 0.5rem 1rem 0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+}
+
+.edit-section button::before,
+.user-management button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.3s ease;
+}
+
+.edit-section button:hover,
+.user-management button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+    background: linear-gradient(135deg, #d35400, #e67e22);
+}
+
+.edit-section button:hover::before,
+.user-management button:hover::before {
+    left: 100%;
+}
+
+.edit-section button:active,
+.user-management button:active {
+    transform: translateY(0);
+}
+
+/* Przycisk dezaktywacji - specjalny styl */
+.user-management button {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.user-management button:hover {
+    background: linear-gradient(135deg, #c82333, #dc3545);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .worker-panel {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid #333;
+    }
+    
+    .sidebar h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .sidebar button {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .content {
+        padding: 1.5rem;
+    }
+    
+    .profile {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .edit-section input,
+    .user-management input {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: 1rem;
+    }
+    
+    .edit-section,
+    .user-management,
+    .profile {
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+    
+    .sidebar button {
+        margin-bottom: 0.3rem;
+    }
+    
+    .edit-section button,
+    .user-management button {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
 }

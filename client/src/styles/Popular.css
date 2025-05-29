@@ -1,61 +1,288 @@
+/* Popular.css - Redesign w stylu platformy streamingowej */
+
 .popular {
-    background: linear-gradient(to bottom right, #f0e68c, #dda0dd);
-    padding: 2rem;
-    border-radius: 1em;
-    box-shadow: 0 0.4em 0.6em rgba(0, 0, 0, 0.1);
-    color: #333;
-    font-family: Arial, sans-serif;
-    position: relative; /* Ensure it doesn’t overlap other elements */
-    z-index: 1; /* Lower z-index to avoid overlapping the header */
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.95));
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    border: 1px solid #333;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.popular::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #e67e22, #d35400, #e67e22);
+    animation: shimmer 2s ease-in-out infinite alternate;
+}
+
+.popular::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="0.3" fill="%23333" opacity="0.1"/><circle cx="75" cy="75" r="0.3" fill="%23333" opacity="0.1"/><circle cx="50" cy="10" r="0.2" fill="%23333" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+    opacity: 0.3;
+    z-index: 1;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-10px); opacity: 0.8; }
+    100% { transform: translateX(10px); opacity: 1; }
 }
 
 .popular h2 {
     text-align: center;
-    font-size: 2em;
-    margin-bottom: 1.5em;
-    color: #4b0082; /* Indigo */
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #e67e22;
+    font-weight: 700;
+    position: relative;
+    z-index: 2;
+}
+
+.popular h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #e67e22, #d35400);
+    border-radius: 2px;
 }
 
 .popular ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+    position: relative;
+    z-index: 2;
 }
 
 .book-item {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 2em;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 0.5em;
-    padding: 1em;
-    box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.5rem;
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.book-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(230, 126, 34, 0.05), transparent);
+    transition: left 0.6s ease;
+}
+
+.book-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(230, 126, 34, 0.2);
+    border-color: rgba(230, 126, 34, 0.3);
+}
+
+.book-item:hover::before {
+    left: 100%;
 }
 
 .book-image {
-    width: 10vw; /* Scales with the viewport width */
-    height: auto;
-    border-radius: 0.5em;
-    margin-right: 1em;
+    width: 150px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-right: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.book-item:hover .book-image {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(230, 126, 34, 0.3);
 }
 
 .book-details {
     flex: 1;
+    position: relative;
 }
 
 .book-title {
-    font-size: 1.5em;
-    margin: 0 0 0.5em;
-    color: #4b0082; /* Indigo */
+    font-size: 1.8rem;
+    margin: 0 0 0.8rem;
+    color: #e67e22;
+    font-weight: 700;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+}
+
+.book-item:hover .book-title {
+    color: #d35400;
 }
 
 .book-type {
-    font-size: 1.2em;
-    margin: 0 0 0.5em;
-    color: #555;
+    font-size: 1rem;
+    margin: 0 0 1rem;
+    color: #ccc;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.3rem 1rem;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), rgba(211, 84, 0, 0.2));
+    border-radius: 20px;
+    display: inline-block;
+    border: 1px solid rgba(230, 126, 34, 0.3);
 }
 
 .book-description {
-    font-size: 1em;
-    color: #666;
+    font-size: 1rem;
+    color: #e0e0e0;
+    line-height: 1.6;
+    text-align: justify;
+    margin: 0;
+    position: relative;
+    max-height: 200px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.book-description::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, transparent, rgba(20, 20, 20, 0.9));
+    pointer-events: none;
+}
+
+.book-item:hover .book-description {
+    max-height: none;
+}
+
+.book-item:hover .book-description::after {
+    opacity: 0;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .popular {
+        padding: 1.5rem;
+        margin: 1rem;
+        border-radius: 16px;
+    }
+    
+    .popular h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .book-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .book-image {
+        width: 120px;
+        height: 180px;
+        margin-right: 0;
+        margin-bottom: 1.5rem;
+        align-self: center;
+    }
+    
+    .book-title {
+        font-size: 1.5rem;
+    }
+    
+    .book-description {
+        text-align: left;
+        max-height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .popular {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+    
+    .popular h2 {
+        font-size: 1.8rem;
+    }
+    
+    .book-item {
+        padding: 1rem;
+    }
+    
+    .book-image {
+        width: 100px;
+        height: 150px;
+    }
+    
+    .book-title {
+        font-size: 1.3rem;
+    }
+    
+    .book-type {
+        font-size: 0.9rem;
+        padding: 0.2rem 0.8rem;
+    }
+    
+    .book-description {
+        font-size: 0.9rem;
+        max-height: 120px;
+    }
+}
+
+/* Dodatkowe efekty dla lepszego UX */
+@media (hover: hover) {
+    .book-item {
+        cursor: pointer;
+    }
+    
+    .book-item:hover .book-type {
+        background: linear-gradient(135deg, rgba(230, 126, 34, 0.3), rgba(211, 84, 0, 0.3));
+        border-color: rgba(230, 126, 34, 0.5);
+        color: #fff;
+    }
+}
+
+/* Animacja ładowania */
+.popular {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
