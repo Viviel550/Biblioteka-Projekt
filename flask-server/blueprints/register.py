@@ -1,12 +1,8 @@
 from flask import Blueprint, request, jsonify
 import psycopg, datetime
+from config import Config
 
 reg = Blueprint('register', __name__)
-
-DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-DB_NAME = "postgres"  
-DB_USER = "postgres.dnmzlvofeecsinialsps"
-DB_PASSWORD = "projekt!szkolny"
 
 @reg.route('/register', methods=['POST'])
 def register():
@@ -20,12 +16,7 @@ def register():
 
     try:
         # Connect to the PostgreSQL database using psycopg 3.2.6
-        with psycopg.connect(
-            host=DB_HOST,
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD
-        ) as connection:
+        with psycopg.connect(**Config.get_db_connection_params()) as connection:
             with connection.cursor() as cursor:
                 # Check if the username already exists and insert if it doesn't
                 query = """

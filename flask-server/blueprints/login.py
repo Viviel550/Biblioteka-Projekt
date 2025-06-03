@@ -1,18 +1,12 @@
 from flask import Blueprint, request, jsonify
-import psycopg
-import jwt  # Import PyJWT
-import datetime  # For token expiration
+import psycopg, jwt, datetime  # Import PyJWT and datetime for token expiration
+from config import Config
 
 auth = Blueprint('auth', __name__)
 
-# PostgreSQL connection details for Supabase
-DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-DB_NAME = "postgres"  
-DB_USER = "postgres.dnmzlvofeecsinialsps"
-DB_PASSWORD = "projekt!szkolny"
 
 # Secret key for signing JWT tokens
-SECRET_KEY = "secret"  # Replace with a secure, random key
+SECRET_KEY = Config.SECRET_KEY
 
 @auth.route('/login', methods=['POST'])
 def login():
@@ -24,13 +18,7 @@ def login():
         return jsonify({"error": "Nazwa użytkownika i hasło są wymagane."}), 400
 
     try:
-        # Connect to the PostgreSQL database using psycopg 3.2.6
-        with psycopg.connect(
-            host=DB_HOST,
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD
-        ) as connection:
+        with psycopg.connect(**Config.get_db_connection_params()) as connection:
             with connection.cursor() as cursor:
                 # Query the database and convert the result to JSON using row_to_json()
                 query = """
@@ -76,12 +64,7 @@ def workerlogin():
 
     try:
         # Connect to the PostgreSQL database using psycopg 3.2.6
-        with psycopg.connect(
-            host=DB_HOST,
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD
-        ) as connection:
+        with psycopg.connect(**Config.get_db_connection_params()) as connection:
             with connection.cursor() as cursor:
                 # Query the database and convert the result to JSON using row_to_json()
                 query = """
@@ -131,12 +114,7 @@ def set_worker_password():
         return jsonify({"error": "Identyfikator pracownika i nowe hasło są wymagane."}), 400
 
     try:
-        with psycopg.connect(
-            host=DB_HOST,
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD
-        ) as connection:
+        with psycopg.connect(**Config.get_db_connection_params()) as connection:
             with connection.cursor() as cursor:
                 query = """
                     UPDATE public."Employees"

@@ -1,20 +1,12 @@
 # flask-server/blueprints/workerpanel.py
 from flask import Blueprint, request, jsonify
-import psycopg
-import jwt
-import datetime
+import psycopg, jwt, datetime
 from functools import wraps
-
+from config import Config
 workerpanel = Blueprint('workerpanel', __name__)
 
 # JWT Secret Key
-SECRET_KEY = "secret"
-
-# DB credentials
-DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-DB_NAME = "postgres"
-DB_USER = "postgres.dnmzlvofeecsinialsps"
-DB_PASSWORD = "projekt!szkolny"
+SECRET_KEY = Config.SECRET_KEY
 
 # Middleware: JWT Auth decorator
 def token_required(f):
@@ -42,9 +34,7 @@ def token_required(f):
 def get_profile():
     worker_id = request.worker_id
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     SELECT id, first_name, last_name, email 
@@ -77,9 +67,7 @@ def update_email():
         return jsonify({"error": "Nowy email jest wymagany"}), 400
 
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     UPDATE public."Employees"
@@ -105,9 +93,7 @@ def update_password():
         return jsonify({"error": "Wszystkie pola są wymagane"}), 400
 
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 # Pobierz aktualne hasło i porównaj
                 cur.execute("""
@@ -145,9 +131,7 @@ def update_password():
 @token_required
 def deactivate_user(user_id):
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     UPDATE auth.users

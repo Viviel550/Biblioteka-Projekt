@@ -1,21 +1,13 @@
 from flask import Blueprint, jsonify, request, session
-import requests, logging
-import psycopg
-import jwt
+import requests, logging, psycopg, jwt, json
 from functools import wraps
-
+from config import Config
 bookDetails_bp = Blueprint('bookDetails', __name__)
 
 logging.basicConfig(level=logging.INFO)
 
 # JWT Secret Key
-SECRET_KEY = "secret"
-
-# DB credentials
-DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-DB_NAME = "postgres"
-DB_USER = "postgres.dnmzlvofeecsinialsps"
-DB_PASSWORD = "projekt!szkolny"
+SECRET_KEY = Config.SECRET_KEY
 
 # Middleware: JWT Auth decorator
 def token_required(f):
@@ -71,9 +63,7 @@ def addToFavorites():
     logging.info(f"Received slug: {slug}, user_id: {user_id}")
 
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 # Dodaj książkę do Books jeśli nie istnieje
                 cur.execute("""
@@ -122,9 +112,7 @@ def getBookOpinions():
     logging.info(f"Received slug for opinions: {slug}")
 
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 # Pobierz book_id
                 cur.execute("""
@@ -192,9 +180,7 @@ def addOpinion():
     logging.info("Received slug, user_id and opinion.")
 
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 # Dodaj książkę do Books jeśli nie istnieje
                 cur.execute("""
@@ -238,14 +224,22 @@ def deleteOpinion():
     if not review_id:
         return jsonify({'error': 'Brak review_id'}), 400
     
-
     if(rola == "Bibliotekarz"):
         try:
             logging.info(f"Received review_id: {review_id} for delete, by Bibliotekarz: {worker_id}.")
-            with psycopg.connect(
-                host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-            ) as conn:
+            with psycopg.connect(**Config.get_db_connection_params()) as conn:
                 with conn.cursor() as cur:
+                    # Get review details before deletion for logging
+                    cur.execute("""
+                        SELECT user_id, book_id, rating, review 
+                        FROM public.book_reviews 
+                        WHERE review_id = %s
+                    """, (review_id,))
+                    review_data = cur.fetchone()
+                    
+                    if not review_data:
+                        return jsonify({"error": "Nie znaleziono opinii."}), 404
+
                     # usunięcie opini przez Bibliotekarza
                     cur.execute("""
                         DELETE FROM public.book_reviews 
@@ -255,6 +249,21 @@ def deleteOpinion():
                     if cur.rowcount == 0:
                         return jsonify({"error": "Nie znaleziono opinii."}), 404
 
+                    # Add log entry
+                    log_data = {
+                        "review_id": review_id,
+                        "deleted_by": "Bibliotekarz",
+                        "original_user_id": review_data[0],
+                        "book_id": review_data[1],
+                        "rating": review_data[2],
+                        "review_text": review_data[3]
+                    }
+                    
+                    cur.execute("""
+                        INSERT INTO public."Employee_log" (employee_id, action, action_data)
+                        VALUES (%s, %s, %s)
+                    """, (worker_id, "DELETE_OPINION", json.dumps(log_data)))
+
                     conn.commit()
                     return jsonify({"message": "Opinia usunięta przez Bibliotekarza!"}), 200           
         except psycopg.Error as e:
@@ -262,9 +271,7 @@ def deleteOpinion():
 
     try:
         logging.info(f"Received review_id: {review_id} for delete, by user: {user_id}.")
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 # usunięcie opini
                 cur.execute("""
@@ -290,9 +297,7 @@ def getAvgRating():
     logging.info(f"Received slug for avg rating: {slug}")
 
     try:
-        with psycopg.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
-        ) as conn:
+        with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
                 # Pobierz book_id
                 cur.execute("""
