@@ -7,6 +7,12 @@ function WorkerPanel() {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('profile');
     const [profile, setProfile] = useState(null);
+    const [logs, setLogs] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [filterWorker, setFilterWorker] = useState('');
+    const [filterAction, setFilterAction] = useState('');
+    const [workersList, setWorkersList] = useState([]);
     const [email, setEmail] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -48,6 +54,25 @@ function WorkerPanel() {
                 })
                     .then((res) => res.json())
                     .then((data) => setProfile(data));
+            }
+            if (activeTab === 'logs') {
+                // Fetch workers list for filter dropdown
+                fetch('http://localhost:3000/admin/workers', {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (!data.error) {
+                            setWorkersList(data);
+                        }
+                    })
+                    .catch((err) => console.error('Error fetching workers for filter:', err));
+
+                // Fetch logs
+                fetchLogs();
             }
             
             if (activeTab === 'users') {
@@ -112,6 +137,41 @@ function WorkerPanel() {
         window.location.href = '/login';
     };
 
+    const fetchLogs = () => {
+        const params = new URLSearchParams({
+            page: currentPage,
+            limit: 20,
+            ...(filterWorker && { worker: filterWorker }),
+            ...(filterAction && { action: filterAction })
+        });
+
+        fetch(`http://localhost:3000/admin/logs?${params}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.error) {
+                    setLogs(data.logs);
+                    setTotalPages(Math.ceil(data.total / 20));
+                } else {
+                    console.error('Error fetching logs:', data.error);
+                }
+            })
+            .catch((err) => console.error('Error fetching logs:', err));
+    };
+    const handleFilterChange = () => {
+        setCurrentPage(1); // Reset to first page when filtering
+        fetchLogs();
+    };
+
+    const clearFilters = () => {
+        setFilterWorker('');
+        setFilterAction('');
+        setCurrentPage(1);
+    };
     const updateEmail = () => {
         fetch('http://localhost:3000/admin/email', {
             method: 'PUT',
@@ -124,6 +184,7 @@ function WorkerPanel() {
             .then(res => res.json())
             .then(data => alert(data.message || data.error));
     };
+
     const updatePassword = () => {
       if (newPassword !== confirmPassword) {
           alert("Nowe hasła się nie zgadzają.");
@@ -248,8 +309,9 @@ function WorkerPanel() {
                 <button onClick={() => setActiveTab('profile')}>Profil</button>
                 <button onClick={() => setActiveTab('edit')}>Edycja danych</button>
                 <button onClick={() => setActiveTab('addworker')}>Dodanie Pracownika</button>
-                <button onClick={() => setActiveTab('delworker')}>Usunięcie Pracownika</button>
+                <button onClick={() => setActiveTab('delworker')}>Zarządzanie Pracownikami</button>
                 <button onClick={() => setActiveTab('users')}>Usunięcie Użytkownika</button>
+                <button onClick={() => setActiveTab('logs')}>Logi</button>
                 <button onClick={handleLogout}>Wyloguj</button>
             </div>
             <div className="content">
@@ -386,6 +448,97 @@ function WorkerPanel() {
                             <p><strong>ID:</strong> {modalData.userId}</p>
                             <p><strong>Hasło:</strong> {modalData.password}</p>
                             <button onClick={closeModal}>Zamknij</button>
+                        </div>
+                    </div>
+                )}
+                {activeTab === 'logs' && (
+                    <div className="logs-section">
+                        <h3>Logi systemowe</h3>
+                        
+                        {/* Filters */}
+                        <div className="filters">
+                            <div className="filter-group">
+                                <label>Filtruj po pracowniku:</label>
+                                <select 
+                                    value={filterWorker} 
+                                    onChange={(e) => setFilterWorker(e.target.value)}
+                                >
+                                    <option value="">Wszyscy pracownicy</option>
+                                    {workersList.map((worker) => (
+                                        <option key={worker.id} value={worker.id}>
+                                            {worker.name} {worker.surname}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            
+                            <div className="filter-group">
+                                <label>Filtruj po akcji:</label>
+                                <select 
+                                    value={filterAction} 
+                                    onChange={(e) => setFilterAction(e.target.value)}
+                                >
+                                    <option value="">Wszystkie akcje</option>
+                                    <option value="REACTIVATE_WORKER">REACTIVATE_WORKER</option>
+                                    <option value="DEACTIVATE_WORKER">DEACTIVATE_WORKER</option>
+                                    <option value="CREATE_WORKER">CREATE_WORKER</option>
+                                    <option value="DELETE_USER">DELETE_USER</option>
+                                    <option value="DELETE_OPINION">DELETE_OPINION</option>
+                                </select>
+                            </div>
+                            
+                            <div className="filter-buttons">
+                                <button onClick={handleFilterChange}>Zastosuj filtry</button>
+                                <button onClick={clearFilters}>Wyczyść filtry</button>
+                            </div>
+                        </div>
+
+                        {/* Logs Table */}
+                        <table className="logs-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pracownik</th>
+                                    <th>Akcja</th>
+                                    <th>Szczegóły</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {logs.map((log) => (
+                                    <tr key={log.log_id}>
+                                        <td>{log.log_id}</td>
+                                        <td>{log.employee_name || 'N/A'}</td>
+                                        <td>{log.action}</td>
+                                        <td>
+                                            <details>
+                                                <summary>Zobacz szczegóły</summary>
+                                                <pre>{JSON.stringify(log.action_data, null, 2)}</pre>
+                                            </details>
+                                        </td>
+                                        <td>{new Date(log.action_time).toLocaleString('pl-PL')}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                        {/* Pagination */}
+                        <div className="pagination">
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                            >
+                                Poprzednia
+                            </button>
+                            
+                            <span>Strona {currentPage} z {totalPages}</span>
+                            
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                            >
+                                Następna
+                            </button>
                         </div>
                     </div>
                 )}

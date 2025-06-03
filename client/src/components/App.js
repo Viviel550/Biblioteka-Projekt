@@ -63,7 +63,7 @@ function App() {
     <Router>
       <div className="Wrapper">
         <Header />
-        <div className="Content">
+        
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/popularne" element={<Popular />} />
@@ -76,7 +76,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/book/:slug" element={<BookDetails />} />
           </Routes>
-        </div>
+    
       </div>
     </Router>
   );
