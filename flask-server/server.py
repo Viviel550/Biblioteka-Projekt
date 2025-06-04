@@ -8,6 +8,7 @@ from blueprints.bookDetails import bookDetails_bp
 from blueprints.bookSearch import bookSearch_bp
 from blueprints.adminpanel import adminpanel
 from blueprints.popular import popular_bp
+from blueprints.userpanel import userpanel
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__)
 app.register_blueprint(workerpanel)
@@ -17,6 +18,7 @@ app.secret_key = 'lubiekotki123'
 app.register_blueprint(popular_bp)
 app.register_blueprint(adminpanel)
 app.register_blueprint(auth)
+app.register_blueprint(userpanel)
 app.register_blueprint(categories_bp)  
 app.register_blueprint(reg)
 app.register_blueprint(bookDetails_bp)
