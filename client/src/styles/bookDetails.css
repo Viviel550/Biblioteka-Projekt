@@ -717,3 +717,55 @@ html, body, #root {
     margin: 1rem;
   }
 }
+
+/* User's own opinion highlighting */
+.user-own-opinion {
+    border: 2px solid #e67e22 !important;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.1), rgba(15, 15, 15, 0.9)) !important;
+    position: relative;
+}
+
+.user-own-opinion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #e67e22, #d35400, #e67e22);
+}
+
+.own-opinion-badge {
+    color: #e67e22;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Disabled button state */
+.btn-primary.disabled,
+.btn-secondary.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #666 !important;
+    border-color: #666 !important;
+}
+
+.btn-primary.disabled:hover,
+.btn-secondary.disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Enhanced opinion styling */
+.opinion-item {
+    transition: all 0.3s ease;
+}
+
+.opinion-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.user-own-opinion:hover {
+    box-shadow: 0 8px 25px rgba(230, 126, 34, 0.3) !important;
+}

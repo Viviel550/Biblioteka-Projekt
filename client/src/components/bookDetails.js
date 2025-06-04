@@ -111,6 +111,8 @@ function BookDetails() {
   const [showFavoritesPopup, setShowFavoritesPopup] = useState(false);
   const [favoritesMessage, setFavoritesMessage] = useState('');
   const [favoritesIsSuccess, setFavoritesIsSuccess] = useState(false);
+  const [userHasReviewed, setUserHasReviewed] = useState(false);
+  const [userReview, setUserReview] = useState(null);
   const token = localStorage.getItem('token');
 
   //uzyskanie user_id z tokenu
@@ -185,12 +187,45 @@ function BookDetails() {
         if (data.error) {
           throw new Error(data.error);
         }
-        setOpinions(Array.isArray(data) ? data : []);
+        
+        const opinionsArray = Array.isArray(data) ? data : [];
+        
+        // Check if user has already reviewed and separate their review
+        let userReviewFound = null;
+        let otherReviews = [];
+        
+        if (user_Id_token) {
+          opinionsArray.forEach(opinion => {
+            if (opinion.user_id === user_Id_token) {
+              userReviewFound = opinion;
+              setUserHasReviewed(true);
+            } else {
+              otherReviews.push(opinion);
+            }
+          });
+          
+          setUserReview(userReviewFound);
+          
+          // If user has a review, put it first, otherwise just show other reviews
+          if (userReviewFound) {
+            setOpinions([userReviewFound, ...otherReviews]);
+          } else {
+            setOpinions(otherReviews);
+            setUserHasReviewed(false);
+          }
+        } else {
+          setOpinions(opinionsArray);
+          setUserHasReviewed(false);
+          setUserReview(null);
+        }
+        
         console.log('Otrzymane opinie:', data);
       })
       .catch(error => {
         console.error('Błąd podczas pobierania opinii:', error);
         setOpinions([]);
+        setUserHasReviewed(false);
+        setUserReview(null);
       });
   };
 
@@ -265,7 +300,6 @@ function BookDetails() {
     });
   };
 
-  //dodanie opini
   const handleClickAddOpinion = (slug) => {
     if (!token) {
       setFavoritesMessage('Aby dodać opinię musisz się zalogować!');
@@ -273,98 +307,122 @@ function BookDetails() {
       setShowFavoritesPopup(true);
       return;
     }
+    
     if (decodedToken && decodedToken.rola === "Bibliotekarz") {
       setFavoritesMessage('Nie możesz dodawać komentarzy.');
       setFavoritesIsSuccess(false);
       setShowFavoritesPopup(true);
       return;
     }
+    
+    // Check if user already has a review
+    if (userHasReviewed) {
+      setFavoritesMessage('Możesz mieć tylko jedną opinię na książkę. Usuń poprzednią opinię, aby dodać nową.');
+      setFavoritesIsSuccess(false);
+      setShowFavoritesPopup(true);
+      return;
+    }
+    
     setShowOpinionPopup(true);
   };
 
   const handleOpinionSubmit = (opinionText, rating) => {
-    if (!opinionText.trim()) {
-      setFavoritesMessage('Opinia nie może być pusta!');
-      setFavoritesIsSuccess(false);
-      setShowFavoritesPopup(true);
-      return;
-    }
-    if (!rating || rating < 1 || rating > 5) {
-      setFavoritesMessage('Ocena musi być w zakresie 1-5!');
-      setFavoritesIsSuccess(false);
-      setShowFavoritesPopup(true);
-      return;
-    }
+  if (!opinionText.trim()) {
+    setFavoritesMessage('Opinia nie może być pusta!');
+    setFavoritesIsSuccess(false);
+    setShowFavoritesPopup(true);
+    return;
+  }
+  if (!rating || rating < 1 || rating > 5) {
+    setFavoritesMessage('Ocena musi być w zakresie 1-5!');
+    setFavoritesIsSuccess(false);
+    setShowFavoritesPopup(true);
+    return;
+  }
 
-    fetch('/addOpinion', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ slug, opinionText, rating })
-    })
-    .then(response => response.json())
-    .then(data => {
-      const message = data.message || data.error;
-      const isSuccess = !data.error;
-      
-      setFavoritesMessage(message);
-      setFavoritesIsSuccess(isSuccess);
-      setShowFavoritesPopup(true);
-      
-      if (isSuccess) {
-        setShowOpinionPopup(false);
-        fetchOpinions();
-        fetchAvarage();
-      }
-    })
-    .catch(error => {
-      setFavoritesMessage('Wystąpił błąd podczas dodawania opinii.');
-      setFavoritesIsSuccess(false);
-      setShowFavoritesPopup(true);
+  // Double-check if user already has a review before submitting
+  if (userHasReviewed) {
+    setFavoritesMessage('Już masz opinię dla tej książki. Usuń ją najpierw, aby dodać nową.');
+    setFavoritesIsSuccess(false);
+    setShowFavoritesPopup(true);
+    setShowOpinionPopup(false);
+    return;
+  }
+
+  fetch('/addOpinion', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ slug, opinionText, rating })
+  })
+  .then(response => response.json())
+  .then(data => {
+    const message = data.message || data.error;
+    const isSuccess = !data.error;
+    
+    setFavoritesMessage(message);
+    setFavoritesIsSuccess(isSuccess);
+    setShowFavoritesPopup(true);
+    
+    if (isSuccess) {
+      setShowOpinionPopup(false);
+      fetchOpinions(); // This will update userHasReviewed state
+      fetchAvarage();
+    }
+  })
+  .catch(error => {
+    setFavoritesMessage('Wystąpił błąd podczas dodawania opinii.');
+    setFavoritesIsSuccess(false);
+    setShowFavoritesPopup(true);
     });
   };
 
   //usunięcie opini
-  const handleDeleteOpinion = (review_id) => {
-    if (!window.confirm('Czy na pewno chcesz usunąć tę opinię?')) return;
-    
-    if (!token) {
-      setFavoritesMessage('Musisz być zalogowany aby usunąć opinię!');
-      setFavoritesIsSuccess(false);
-      setShowFavoritesPopup(true);
-      return;
-    }
+const handleDeleteOpinion = (review_id) => {
+  if (!window.confirm('Czy na pewno chcesz usunąć tę opinię?')) return;
+  
+  if (!token) {
+    setFavoritesMessage('Musisz być zalogowany aby usunąć opinię!');
+    setFavoritesIsSuccess(false);
+    setShowFavoritesPopup(true);
+    return;
+  }
 
-    fetch('/deleteOpinion', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ review_id })
-    })
-    .then(res => res.json())
-    .then(data => {
-      const message = data.message || data.error;
-      const isSuccess = !data.error;
-      
-      setFavoritesMessage(message);
-      setFavoritesIsSuccess(isSuccess);
-      setShowFavoritesPopup(true);
-      
-      if (isSuccess) {
-        fetchOpinions();
-        fetchAvarage();
+  fetch('/deleteOpinion', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ review_id })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const message = data.message || data.error;
+    const isSuccess = !data.error;
+    
+    setFavoritesMessage(message);
+    setFavoritesIsSuccess(isSuccess);
+    setShowFavoritesPopup(true);
+    
+    if (isSuccess) {
+      // If user deleted their own review, reset the state
+      if (userReview && userReview.review_id === review_id) {
+        setUserHasReviewed(false);
+        setUserReview(null);
       }
-    })
-    .catch(err => {
-      setFavoritesMessage('Błąd podczas usuwania opinii');
-      setFavoritesIsSuccess(false);
-      setShowFavoritesPopup(true);
-    });
-  };
+      fetchOpinions();
+      fetchAvarage();
+    }
+  })
+  .catch(err => {
+    setFavoritesMessage('Błąd podczas usuwania opinii');
+    setFavoritesIsSuccess(false);
+    setShowFavoritesPopup(true);
+  });
+};
 
   if (loading) {
     return (
@@ -522,10 +580,20 @@ function BookDetails() {
         ) : (
           <div className="opinions-list">
             {opinions.map((opinion, index) => (
-              <div key={opinion.review_id || index} className="opinion-item">
+              <div 
+                key={opinion.review_id || index} 
+                className={`opinion-item ${
+                  user_Id_token && opinion.user_id === user_Id_token ? 'user-own-opinion' : ''
+                }`}
+              >
                 <div className="opinion-header">
                   <div className="opinion-user">
-                    <strong>{opinion.nickname || 'Anonim'}</strong>
+                    <strong>
+                      {opinion.nickname || 'Anonim'}
+                      {user_Id_token && opinion.user_id === user_Id_token && (
+                        <span className="own-opinion-badge"> (Twoja opinia)</span>
+                      )}
+                    </strong>
                     <Rating 
                       value={opinion.rating || 0} 
                       readOnly 
@@ -561,6 +629,16 @@ function BookDetails() {
           </div>
         )}
       </div>
+      {user_Id_token && !worker_Id_token && (
+        <button 
+          onClick={() => handleClickAddOpinion(slug)}
+          className={`btn-primary ${userHasReviewed ? 'disabled' : ''}`}
+          disabled={userHasReviewed}
+          title={userHasReviewed ? 'Usuń swoją obecną opinię, aby dodać nową' : 'Dodaj opinię'}
+        >
+          {userHasReviewed ? '✍️ Masz już opinię' : '✍️ Dodaj opinię'}
+        </button>
+      )}
       
       {showOpinionPopup && (
         <OpinionPopup
