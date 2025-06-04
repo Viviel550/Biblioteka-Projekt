@@ -28,7 +28,7 @@ function Login() {
           navigate('/Panel');
           return;
       }
-  }
+    }
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -62,37 +62,46 @@ function Login() {
   };
 
   return (
-    <>
-    <div className="login">
-      <h2>Logowanie</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Nazwa Użytkownika:</label>
-          <input 
-            type="text" 
-            id="username"
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            required 
-          />
+    <div className="login-page">
+      <div className="login-container">
+        <h2>Logowanie</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Nazwa Użytkownika</label>
+            <input 
+              type="text" 
+              id="username"
+              value={username} 
+              onChange={(e) => setUsername(e.target.value)} 
+              required 
+              placeholder="Wprowadź nazwę użytkownika"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Hasło</label>
+            <input 
+              type="password" 
+              id="password"
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+              placeholder="Wprowadź hasło"
+            />
+          </div>
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit" className="login-button">Zaloguj</button>
+        </form>
+        <div className="login-footer">
+          <p>Nie masz jeszcze konta?</p>
+          <button type="button" className="register-button" onClick={() => navigate('/Register')}>
+            Zarejestruj się
+          </button>
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Hasło:</label>
-          <input 
-            type="password" 
-            id="password"
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
-        </div>
-        <p className="error_Login">{error || '\u00A0'}</p>
-        <button type="submit" class = "LoginButton" >Zaloguj</button>
-      </form>
-      <button type ="button" class = "LoginButton" onClick={() => navigate('/Register')}>Zarejestruj</button>
+      </div>
+      <button type="button" className="worker-login-button" onClick={() => navigate('/WorkerLogin')}>
+        Zaloguj Jako Pracownik
+      </button>
     </div>
-    <button type="button" class = "worker-login-button" onClick={() => navigate('/WorkerLogin')}>Zaloguj Jako Pracownik</button>
-    </>
   );
 }
 

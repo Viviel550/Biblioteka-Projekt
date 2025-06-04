@@ -31,8 +31,6 @@ function Header() {
           <a href="/" className="nav-item">Strona Główna</a>
           <a href="/popularne" className="nav-item">Popularne</a>
           <a href="/kategorie" className="nav-item">Kategorie</a>
-          <a href="/nowosci" className="nav-item">Nowości</a>
-          <a href="/autorzy" className="nav-item">Autorzy</a>
           
           <div className="auth-buttons">
             {token ? (

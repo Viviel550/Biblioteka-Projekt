@@ -1,111 +1,445 @@
-/* client/src/styles/WorkerPanel.css */
+/* AdminPanel.css - Max Style */
 
 .worker-panel {
     display: flex;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f0f0f;
+    color: #fff;
 }
 
+/* Sidebar styling */
 .sidebar {
-    width: 220px;
-    background: #f4f4f4;
-    padding: 20px;
-    border-right: 1px solid #ccc;
+    width: 280px;
+    background: linear-gradient(180deg, rgba(15, 15, 15, 0.95) 0%, rgba(25, 25, 25, 0.95) 100%);
+    padding: 2rem 1.5rem;
+    border-right: 1px solid rgba(230, 126, 34, 0.2);
     display: flex;
     flex-direction: column;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 
 .sidebar h2 {
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
+    color: #e67e22;
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+    border-bottom: 2px solid #e67e22;
+    padding-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar button {
-    background: none;
-    border: none;
-    padding: 10px;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(211, 84, 0, 0.1) 100%);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    padding: 1rem 1.5rem;
     text-align: left;
-    font-size: 16px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    margin-bottom: 10px;
+    margin-bottom: 0.75rem;
+    color: #fff;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(230, 126, 34, 0.2), transparent);
+    transition: left 0.5s ease;
 }
 
 .sidebar button:hover {
-    background-color: #ddd;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.2) 0%, rgba(211, 84, 0, 0.2) 100%);
+    border-color: #e67e22;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
 }
 
+.sidebar button:hover::before {
+    left: 100%;
+}
+
+.sidebar button:active {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: #0f0f0f;
+    transform: translateX(3px);
+}
+
+.sidebar button.active {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: #fff;
+    border-color: #d35400;
+    transform: translateX(8px);
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+}
+
+.sidebar button.logout-btn:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border-color: #dc3545;
+}
+
+/* Content area */
 .content {
-    padding: 20px;
+    padding: 2rem 3rem;
     flex-grow: 1;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    min-height: 100vh;
 }
 
+/* Profile section */
 .profile {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 2rem;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(15, 15, 15, 0.3) 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
 }
 
 .avatar {
-    width: 100px;
-    height: 100px;
-    background: #ccc;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #e67e22, #d35400);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4);
+    animation: profileGlow 3s ease-in-out infinite alternate;
 }
 
-.edit-section input,
-.user-management input {
+@keyframes profileGlow {
+    0% { box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4); }
+    100% { box-shadow: 0 12px 35px rgba(230, 126, 34, 0.6); }
+}
+
+.profile div p {
+    margin: 0.75rem 0;
+    font-size: 1.1rem;
+    color: #e0e0e0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(230, 126, 34, 0.1);
+}
+
+.profile div p:last-child {
+    border-bottom: none;
+}
+
+.profile div p strong {
+    color: #e67e22;
+    font-weight: 600;
+}
+
+/* Edit section */
+.edit-section {
+    background: linear-gradient(135deg, rgba(25, 25, 25, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.edit-section h3 {
+    color: #e67e22;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e67e22;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.edit-section input {
     display: block;
-    margin: 10px 0;
-    padding: 8px;
-    width: 300px;
-    border: 1px solid #ccc;
+    margin: 1rem 0;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    border-radius: 12px;
+    background-color: rgba(34, 34, 34, 0.8);
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
-.edit-section button,
-.user-management button {
-    padding: 8px 12px;
+.edit-section input:focus {
+    outline: none;
+    border-color: #e67e22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+    background-color: rgba(34, 34, 34, 1);
+}
+
+.edit-section input::placeholder {
+    color: #888;
+}
+
+.edit-section button {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+    margin: 0.5rem 0;
 }
 
-.user-table {
+.edit-section button:hover {
+    background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+}
+
+.edit-section button:active {
+    transform: translateY(0);
+}
+
+/* User management and tables */
+.user-management,
+.add-user,
+.delete-worker {
+    background: linear-gradient(135deg, rgba(25, 25, 25, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.user-management h3,
+.add-user h3,
+.delete-worker h3 {
+    color: #e67e22;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px solid #e67e22;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.user-management input {
+    padding: 1rem 1.5rem;
+    width: 100%;
+    max-width: 500px;
+    border: 2px solid rgba(230, 126, 34, 0.3);
+    border-radius: 30px;
+    background-color: rgba(34, 34, 34, 0.8);
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.user-management input:focus {
+    outline: none;
+    border-color: #e67e22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+    background: rgba(34, 34, 34, 1);
+}
+
+.user-management input::placeholder {
+    color: #888;
+}
+
+/* Tables */
+.user-table,
+.worker-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 1.5rem;
+    background: rgba(25, 25, 25, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-.user-table th, .user-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+.user-table th,
+.user-table td,
+.worker-table th,
+.worker-table td {
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    padding: 1rem;
     text-align: left;
 }
 
-.user-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+.user-table th,
+.worker-table th {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.user-table tr{
-    background-color: beige;
-}
-.user-table tr:hover {
-    background-color: #f1f1f1;
+.user-table tr,
+.worker-table tr {
+    background-color: rgba(34, 34, 34, 0.4);
+    transition: all 0.3s ease;
 }
 
-.user-table td button {
-    padding: 5px 10px;
-    background-color: #ff4d4d;
+.user-table tbody tr:hover,
+.worker-table tbody tr:hover {
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.15), rgba(211, 84, 0, 0.15));
+    transform: scale(1.01);
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.2);
+}
+
+.user-table td,
+.worker-table td {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.user-table td button,
+.worker-table td button {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #ff4d4d 0%, #e60000 100%);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 77, 77, 0.3);
 }
 
-.user-table td button:hover {
-    background-color: #e60000;
+.user-table td button:hover,
+.worker-table td button:hover {
+    background: linear-gradient(135deg, #e60000 0%, #cc0000 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
 }
 
+/* Status indicators */
+.status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(46, 160, 67, 0.2));
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(176, 42, 55, 0.2));
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.status-new {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 175, 0, 0.2));
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.deactivate-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important;
+}
+
+.reactivate-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.deactivate-btn:hover,
+.reactivate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Form styling */
+.add-user form {
+    display: grid;
+    gap: 1rem;
+    max-width: 500px;
+    background: rgba(25, 25, 25, 0.3);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+}
+
+.add-user form input,
+.add-user form select {
+    padding: 1rem 1.5rem;
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    border-radius: 12px;
+    background-color: rgba(34, 34, 34, 0.8);
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.add-user form input:focus,
+.add-user form select:focus {
+    outline: none;
+    border-color: #e67e22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+}
+
+.add-user form input::placeholder {
+    color: #888;
+}
+
+.add-user form select option {
+    background-color: #222;
+    color: #fff;
+}
+
+.add-user form button {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+}
+
+.add-user form button:hover {
+    background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+}
+
+/* PRESERVED LOGS SECTION STYLES */
 .logs-section {
     padding: 20px;
 }
@@ -290,82 +624,185 @@
     font-size: 14px;
 }
 
-/* Additional dark theme styles */
-.add-user {
-    background-color: #2d2d2d;
-    padding: 20px;
-    border-radius: 4px;
-    border: 1px solid #444;
-}
-
-.add-user h3 {
-    color: #ff8c00;
-    margin-bottom: 20px;
-}
-
-.add-user input,
-.add-user select {
-    display: block;
-    margin: 10px 0;
-    padding: 8px;
-    width: 300px;
-    border: 1px solid #555;
-    background-color: #1a1a1a;
-    color: #e0e0e0;
-    border-radius: 4px;
-}
-
-.add-user input:focus,
-.add-user select:focus {
-    outline: none;
-    border-color: #ff8c00;
-}
-
-.add-user button {
-    padding: 10px 20px;
-    background-color: #ff8c00;
-    color: #1a1a1a;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.add-user button:hover {
-    background-color: #ff7700;
-}
-
+/* Modal styling */
 .modal {
-    background-color: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
 }
 
 .modal-content {
-    background-color: #2d2d2d;
+    background: linear-gradient(135deg, rgba(25, 25, 25, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    animation: modalAppear 0.3s ease-out;
     color: #e0e0e0;
-    border: 1px solid #444;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .modal-content h3 {
-    color: #ff8c00;
+    color: #e67e22;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.modal-content p {
+    color: #e0e0e0;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+.modal-content p strong {
+    color: #e67e22;
 }
 
 .modal-content button {
-    background-color: #ff8c00;
-    color: #1a1a1a;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: #fff;
     border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
 }
 
 .modal-content button:hover {
-    background-color: #ff7700;
+    background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
 }
 
-/* Responsive adjustments */
+/* Utility classes */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #e67e22;
+}
+
+.spinner {
+    border: 4px solid rgba(230, 126, 34, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid #e67e22;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+    font-size: 1.2rem;
+    background: rgba(25, 25, 25, 0.3);
+    border-radius: 12px;
+    border: 1px dashed rgba(230, 126, 34, 0.3);
+    margin: 2rem 0;
+}
+
+.modal-info {
+    text-align: left;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(34, 34, 34, 0.5);
+    border-radius: 8px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+}
+
+.password-highlight {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    margin-left: 0.5rem;
+}
+
+.modal-note {
+    font-size: 0.9rem;
+    color: #ffc107;
+    font-style: italic;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 6px;
+    border-left: 3px solid #ffc107;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
+    .worker-panel {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 1rem;
+    }
+    
+    .sidebar h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .content {
+        padding: 1rem;
+    }
+    
+    .profile {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .edit-section input {
+        max-width: 100%;
+    }
+    
     .filters {
         flex-direction: column;
         gap: 15px;
@@ -393,5 +830,428 @@
     .logs-table th,
     .logs-table td {
         padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar h2 {
+        font-size: 1.2rem;
+    }
+    
+    .sidebar button {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .content {
+        padding: 0.5rem;
+    }
+    
+    .user-table th,
+    .user-table td,
+    .worker-table th,
+    .worker-table td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}
+
+.users-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.users-search {
+    padding: 0.8rem 1.2rem !important;
+    max-width: 600px !important;
+    font-size: 0.9rem !important;
+    border-radius: 20px !important;
+}
+
+.users-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    background: rgba(230, 126, 34, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+}
+
+.total-count {
+    color: #e67e22;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.page-info {
+    color: #bdc3c7;
+    font-size: 0.85rem;
+}
+
+/* Compact Table Styling */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.users-header {
+    margin-bottom: 1.5rem;
+}
+
+.users-search { 
+    width: 100% !important;
+    max-width: 500px !important;
+    border: 2px solid rgba(230, 126, 34, 0.3) !important;
+    border-radius: 30px !important;
+    background-color: rgba(34, 34, 34, 0.8) !important;
+    color: #fff !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box !important;
+}
+
+.users-search:focus {
+    outline: none !important;
+    border-color: #e67e22 !important;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2) !important;
+    background: rgba(34, 34, 34, 1) !important;
+}
+
+.users-search::placeholder {
+    color: #888 !important;
+}
+
+/* Remove users-stats to match delworker simplicity */
+.users-stats {
+    display: none;
+}
+
+/* Update table styling to match worker-table exactly */
+.table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.user-table.compact {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(25, 25, 25, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    font-size: 0.95rem; /* Match worker table font size */
+}
+
+/* Update the table padding to make rows smaller */
+.user-table.compact th,
+.user-table.compact td {
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    padding: 0.2rem 1rem; /* Reduced from 1rem to 0.6rem for height */
+    text-align: left;
+}
+
+/* Also update the general table styles to match */
+.user-table th,
+.user-table td,
+.worker-table th,
+.worker-table td {
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    padding: 0.6rem 1rem; /* Reduced from 1rem to 0.6rem for height */
+    text-align: left;
+}
+
+/* Make sure worker table also has smaller rows for consistency */
+.worker-table th,
+.worker-table td {
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    padding: 0.6rem 1rem; /* Reduced from 1rem to 0.6rem for height */
+    text-align: left;
+}
+
+/* Update responsive design with even smaller padding */
+@media (max-width: 768px) {
+    .users-header {
+        margin-bottom: 1rem;
+    }
+    
+    .users-search {
+        font-size: 0.9rem !important;
+        padding: 0.8rem 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .user-table.compact {
+        font-size: 0.8rem;
+    }
+    
+    .user-table.compact th,
+    .user-table.compact td {
+        padding: 0.4rem 0.6rem; /* Further reduced for mobile */
+        font-size: 0.8rem;
+    }
+    
+    /* Also update worker table for mobile consistency */
+    .worker-table th,
+    .worker-table td {
+        padding: 0.4rem 0.6rem; /* Further reduced for mobile */
+        font-size: 0.8rem;
+    }
+    
+    /* Hide email column on mobile like worker table */
+    .user-table.compact th:nth-child(3),
+    .user-table.compact td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .users-search {
+        font-size: 0.8rem !important;
+        padding: 0.7rem 0.9rem !important;
+    }
+    
+    .user-table.compact {
+        font-size: 0.7rem;
+    }
+    
+    .user-table.compact th,
+    .user-table.compact td {
+        padding: 0.3rem 0.5rem; /* Even smaller for very small screens */
+        font-size: 0.7rem;
+    }
+    
+    /* Also update worker table for small screens */
+    .worker-table th,
+    .worker-table td {
+        padding: 0.3rem 0.5rem; /* Even smaller for very small screens */
+        font-size: 0.7rem;
+    }
+}
+
+/* Update the existing responsive design section at the bottom */
+@media (max-width: 480px) {
+    .sidebar h2 {
+        font-size: 1.2rem;
+    }
+    
+    .sidebar button {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .content {
+        padding: 0.5rem;
+    }
+    
+    .user-table th,
+    .user-table td,
+    .worker-table th,
+    .worker-table td {
+        padding: 0.3rem 0.5rem; /* Updated to match new smaller size */
+        font-size: 0.8rem;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}
+
+.users-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    background: rgba(25, 25, 25, 0.6);
+    border-radius: 12px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    flex-wrap: nowrap; /* Ensure all buttons stay in one line */
+}
+
+.pagination-btn {
+    padding: 0.4rem 0.6rem; /* Made thinner - reduced padding */
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    background: rgba(34, 34, 34, 0.8);
+    color: #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem; /* Smaller font size */
+    transition: all 0.2s ease;
+    min-width: 28px; /* Reduced minimum width */
+    height: 28px; /* Reduced height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.pagination-btn:disabled {
+    background: rgba(34, 34, 34, 0.4);
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.pagination-btn:not(:disabled):hover {
+    background: rgba(230, 126, 34, 0.2);
+    border-color: #e67e22;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.pagination-btn.active {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: #fff;
+    border-color: #d35400;
+    font-weight: 600;
+}
+
+/* Make navigation buttons even thinner */
+.pagination-btn.first,
+.pagination-btn.last,
+.pagination-btn.prev,
+.pagination-btn.next {
+    font-size: 0.7rem; /* Even smaller for nav buttons */
+    padding: 0.3rem 0.5rem; /* Even thinner padding */
+    min-width: 24px; /* Smaller width */
+    height: 28px;
+}
+
+/* Page numbers container - keep all in one line */
+.page-numbers {
+    display: flex;
+    gap: 0.2rem; /* Reduced gap between page numbers */
+    margin: 0 0.3rem; /* Reduced margin */
+    flex-wrap: nowrap; /* Ensure page numbers stay in one line */
+}
+
+/* Make page number buttons thinner */
+.pagination-btn.number {
+    font-weight: 500;
+    padding: 0.3rem 0.5rem; /* Thinner padding */
+    min-width: 24px; /* Smaller width */
+    font-size: 0.8rem;
+}
+
+/* Re-enable pagination display (override previous CSS that hid it) */
+.users-pagination,
+.pagination-btn,
+.page-numbers,
+.pagination-btn.active,
+.pagination-btn.first,
+.pagination-btn.last,
+.pagination-btn.number {
+    display: flex !important; /* Force display */
+}
+
+/* Update responsive design for thin buttons */
+@media (max-width: 768px) {
+    .users-pagination {
+        gap: 0.2rem;
+        padding: 0.6rem;
+        overflow-x: auto; /* Allow horizontal scroll if needed */
+    }
+    
+    .pagination-btn {
+        padding: 0.3rem 0.4rem; /* Even thinner on mobile */
+        min-width: 22px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+    
+    .pagination-btn.first,
+    .pagination-btn.last,
+    .pagination-btn.prev,
+    .pagination-btn.next {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.3rem;
+        min-width: 20px;
+        height: 24px;
+    }
+    
+    .pagination-btn.number {
+        padding: 0.2rem 0.3rem;
+        min-width: 20px;
+        font-size: 0.7rem;
+    }
+    
+    .page-numbers {
+        gap: 0.1rem;
+        margin: 0 0.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .users-pagination {
+        gap: 0.1rem;
+        padding: 0.4rem;
+    }
+    
+    .pagination-btn {
+        padding: 0.2rem 0.3rem; /* Very thin for small screens */
+        min-width: 18px;
+        height: 20px;
+        font-size: 0.6rem;
+    }
+    
+    .pagination-btn.first,
+    .pagination-btn.last,
+    .pagination-btn.prev,
+    .pagination-btn.next {
+        font-size: 0.5rem;
+        padding: 0.2rem 0.2rem;
+        min-width: 16px;
+        height: 20px;
+    }
+    
+    .pagination-btn.number {
+        padding: 0.2rem 0.2rem;
+        min-width: 16px;
+        font-size: 0.6rem;
+    }
+    
+    /* Show fewer page numbers on very small screens but keep them thin */
+    .page-numbers .pagination-btn:nth-child(n+4) {
+        display: none;
+    }
+}
+
+/* Ensure the pagination stays visible and doesn't wrap */
+.users-pagination {
+    min-height: 44px; /* Minimum height to prevent jumping */
+    box-sizing: border-box;
+}
+
+/* Add small screen horizontal scroll if needed */
+@media (max-width: 320px) {
+    .users-pagination {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 0.3rem;
+    }
+    
+    .users-pagination::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .users-pagination::-webkit-scrollbar-track {
+        background: rgba(34, 34, 34, 0.3);
+    }
+    
+    .users-pagination::-webkit-scrollbar-thumb {
+        background: rgba(230, 126, 34, 0.5);
+        border-radius: 2px;
     }
 }
