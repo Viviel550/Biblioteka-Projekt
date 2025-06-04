@@ -138,6 +138,7 @@ def get_users():
                 cur.execute("""
                     SELECT user_id, name, created_at
                     FROM public.users
+                    WHERE active = TRUE
                     ORDER BY user_id ASC
                 """)
                 users = cur.fetchall()
@@ -148,17 +149,16 @@ def get_users():
     except psycopg.Error as e:
         return jsonify({"error": str(e)}), 500
 
-# 3. Dezaktywacja użytkownika (teoretyczna)
-@adminpanel.route('/admin/deactivate-user/<int:user_id>', methods=['DELETE'])
+@adminpanel.route('/admin/deactivate-user/<int:user_id>', methods=['PUT'])
 @token_required
 def deactivate_user(user_id):
     worker_id = request.worker_id
     try:
         with psycopg.connect(**Config.get_db_connection_params()) as conn:
             with conn.cursor() as cur:
-                # Get user data before deletion for logging
+                # Get user data before deactivation for logging
                 cur.execute("""
-                    SELECT user_id, name, created_at
+                    SELECT user_id, name, created_at, active
                     FROM public.users
                     WHERE user_id = %s
                 """, (user_id,))
@@ -166,10 +166,14 @@ def deactivate_user(user_id):
                 
                 if not user_data:
                     return jsonify({"error": "Użytkownik nie znaleziony"}), 404
+                
+                if not user_data[3]:  # user_data[3] is the 'active' column
+                    return jsonify({"error": "Użytkownik jest już nieaktywny"}), 400
 
-                # Delete the user from the public.users table
+                # Deactivate the user instead of deleting
                 cur.execute("""
-                    DELETE FROM public.users
+                    UPDATE public.users
+                    SET active = FALSE
                     WHERE user_id = %s
                 """, (user_id,))
 
@@ -178,18 +182,21 @@ def deactivate_user(user_id):
                     "user_id": user_data[0],
                     "user_name": user_data[1],
                     "created_at": str(user_data[2]),
+                    "previous_status": user_data[3],
+                    "new_status": False,
                     "action_performed_by": "Admin"
                 }
                 
                 cur.execute("""
                     INSERT INTO public."Employee_log" (employee_id, action, action_data)
                     VALUES (%s, %s, %s)
-                """, (worker_id, "DELETE_USER", json.dumps(log_data)))
+                """, (worker_id, "DEACTIVATE_USER", json.dumps(log_data)))
 
                 conn.commit()
-                return jsonify({"message": f"Użytkownik {user_id} został usunięty"}), 200
+                return jsonify({"message": f"Użytkownik {user_id} został dezaktywowany"}), 200
     except psycopg.Error as e:
         return jsonify({"error": str(e)}), 500
+
 
 @adminpanel.route('/admin/jobs', methods=['GET'])
 @token_required

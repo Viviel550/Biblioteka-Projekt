@@ -485,7 +485,10 @@ html, body, #root {
   color: #fff;
   min-width: 320px;
   max-width: 400px;
+  max-height: 80vh; /* Add this line */
   overflow: hidden;
+  display: flex; /* Add this line */
+  flex-direction: column; /* Add this line */
 }
 
 .favorites-popup-content.success {
@@ -538,8 +541,10 @@ html, body, #root {
 .favorites-popup-body {
   padding: 1.5rem;
   text-align: center;
+  overflow-y: auto; /* Add this line */
+  flex: 1; /* Add this line */
+  max-height: 60vh; /* Add this line */
 }
-
 .favorites-popup-body p {
   margin: 0;
   font-size: 0.95rem;
@@ -590,7 +595,7 @@ html, body, #root {
 /* Loading i Error stany */
 .loading,
 .error {
-  min-height: 100vh;
+  min-height: 20vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -712,9 +717,12 @@ html, body, #root {
   }
 
   .favorites-popup-content {
-    min-width: auto;
-    max-width: 90vw;
+    max-height: 70vh;
     margin: 1rem;
+  }
+  
+  .favorites-popup-body {
+    max-height: 50vh;
   }
 }
 

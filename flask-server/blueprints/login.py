@@ -20,11 +20,11 @@ def login():
     try:
         with psycopg.connect(**Config.get_db_connection_params()) as connection:
             with connection.cursor() as cursor:
-                # Query the database and convert the result to JSON using row_to_json()
+                # Modified query to include active status check
                 query = """
                     SELECT row_to_json(users) 
                     FROM users 
-                    WHERE name = %s AND password = crypt(%s, password);
+                    WHERE name = %s AND password = crypt(%s, password) AND active = TRUE;
                 """
                 cursor.execute(query, (username, password))
                 result = cursor.fetchone()

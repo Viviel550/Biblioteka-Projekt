@@ -343,7 +343,7 @@ function WorkerPanel() {
         if (window.confirm('Czy na pewno chcesz usunąć tego użytkownika? Ta akcja jest nieodwracalna.')) {
             try {
                 const res = await fetch(`http://localhost:3000/admin/deactivate-user/${userId}`, {
-                    method: 'DELETE',
+                    method: 'PUT',
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();

@@ -9,7 +9,7 @@ function FavoritesPopup({ message, isSuccess, onClose }) {
     // Auto-close after 3 seconds
     const timer = setTimeout(() => {
       onClose();
-    }, 3000);
+    }, 30000);
 
     return () => clearTimeout(timer);
   }, [onClose]);
