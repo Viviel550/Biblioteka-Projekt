@@ -7,22 +7,38 @@ from blueprints.workerpanel import workerpanel
 from blueprints.bookDetails import bookDetails_bp
 from blueprints.bookSearch import bookSearch_bp
 from blueprints.adminpanel import adminpanel
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-app = Flask(__name__)
-app.register_blueprint(workerpanel)
-app.secret_key = 'lubiekotki123'
+from blueprints.userpanel import userpanel
 
-# Register blueprints
+# Inicjalizacja aplikacji
+app = Flask(__name__)
+
+# Konfiguracja aplikacji
+app.secret_key = 'lubiekotki123'
+app.config['JWT_SECRET_KEY'] = 'tajny_klucz_jwt'  # Klucz dla JWT
+
+# Rejestracja blueprintów
 app.register_blueprint(adminpanel)
 app.register_blueprint(auth)
-app.register_blueprint(categories_bp)  
+app.register_blueprint(categories_bp)
 app.register_blueprint(reg)
 app.register_blueprint(bookDetails_bp)
 app.register_blueprint(bookSearch_bp)
-# Configure logging
+app.register_blueprint(workerpanel)
+app.register_blueprint(userpanel)
+
+# Konfiguracja logowania
 logging.basicConfig(level=logging.INFO)
 
-# Members API Route
+# Globalna obsługa błędów
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"error": "Endpoint not found"}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({"error": "Internal server error"}), 500
+
+# Testowy endpoint
 @app.route('/testbooks')
 def testbooks():
     authors = ["arthur-conan-doyle", "adam-asnyk"]
@@ -39,7 +55,6 @@ def testbooks():
 
     logging.info(f"Total books fetched: {len(books)}")
     return jsonify(books)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
